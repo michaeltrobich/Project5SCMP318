@@ -1,0 +1,125 @@
+ 
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://cdn.rawgit.com/konvajs/konva/2.0.2/konva.min.js"></script>
+  <meta charset="utf-8">
+  <title>Konva Custom Shape Demo</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #F0F0F0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container"></div>
+  <script>
+    var stage = new Konva.Stage({
+      container: 'container',
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+
+    var layer = new Konva.Layer();
+	
+	 var topGroup = new Konva.Group({
+        x: 50,
+        y: 0,
+        draggable: true
+    });
+    var bottomGroup = new Konva.Group({
+        x: 50,
+        y: 200,
+        draggable: true
+    });
+	
+	var redsquare = new Konva.Rect({
+        x: 0,
+        y: 75,
+        width: 20,
+        height: 20,
+        fill: 'red',
+        stroke: 'red'
+    });
+		
+	var blusquare = new Konva.Rect({
+            x: 0,
+            y: 275,
+            width: 20,
+			height: 20,
+            fill: 'blue',
+            stroke: 'blue',
+        });
+		
+	var redFloor = new Konva.Line({
+      points: [0, 100, 100, 100, 250, 150, 400, 100, 600, 100],
+      stroke: 'black',
+      strokeWidth: 10,
+      lineCap: 'round',
+      lineJoin: 'round'
+    });
+	
+	var bluFloor = new Konva.Line({
+      points: [0, 300, 100, 300, 250, 350, 400, 300, 600, 300],
+      stroke: 'black',
+      strokeWidth: 10,
+      lineCap: 'round',
+      lineJoin: 'round'
+    });
+	
+	//var redspikes = new Konva.RegularPolygon({
+        //    x: 100,
+    //        y: 500,
+      //      sides: 3,
+        //    radius: 20,
+          //  fill: 'red',
+            //stroke: 'red',
+     //       strokeWidth: 4,
+      //      draggable: true
+       // });
+		
+	//var bluspikes = new Konva.RegularPolygon({
+	//		x: 200,
+    //        y: 500,
+    //        sides: 3,
+    //        radius: 20,
+    //        fill: 'blue',
+    //        stroke: 'blue',
+    //        strokeWidth: 4,
+    //        draggable: true
+    //    });
+		
+	//var platform = new Konva.RegularPolygon({
+	//		x: 350,
+	//		y: 500,
+	//		sides: 4,
+	//		radius: 50,
+	//		fill: 'black',
+	//		stroke: 'black',
+	//		strokeWidth: 4,
+	//		draggable: true
+    //    });
+
+    // add the shape to the layer
+	topGroup.add(redsquare);
+	topGroup.add(redFloor);
+	bottomGroup.add(blusquare);
+	bottomGroup.add(bluFloor);
+	layer.add(topGroup);
+	layer.add(bottomGroup);
+	//layer.add(redspikes);
+	//layer.add(bluspikes);
+	//layer.add(platform);
+
+    // add the layer to the stage
+    stage.add(layer);
+  </script>
+
+</body>
+
+</html>
