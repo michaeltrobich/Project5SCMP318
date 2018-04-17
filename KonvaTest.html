@@ -17,24 +17,6 @@
 </head>
 
 <body>
-  <div id="buttons" style="text-align: center;">
-  </br>
-		<button id="start">
-		Start!
-		</button>
-		<button id="redboxup">
-          Move the red box up
-      </button>
-      <button id="redboxdown">
-          Move the red box down
-      </button>
-      <button id="bluboxup">
-          Move the blue box up
-      </button>
-	  <button id="bluboxdown">
-          Move the blue box down
-      </button>
-  </div>
     <div id="container"></div>
   <script>
     var stage = new Konva.Stage({
@@ -48,12 +30,10 @@
 	 var topGroup = new Konva.Group({
         x: 50,
         y: 100,
-        draggable: true
     });
     var bottomGroup = new Konva.Group({
         x: 50,
         y: 300,
-        draggable: true
     });
 	
 	var redsquare = new Konva.Rect({
@@ -90,38 +70,49 @@
       lineJoin: 'round'
     });
 	
-	//var redspikes = new Konva.RegularPolygon({
-        //    x: 100,
-    //        y: 500,
-      //      sides: 3,
-        //    radius: 20,
-          //  fill: 'red',
-            //stroke: 'red',
-     //       strokeWidth: 4,
-      //      draggable: true
-       // });
+	var redspikes = new Konva.RegularPolygon({
+            x: 100,
+            y: 500,
+            sides: 3,
+            radius: 20,
+            fill: 'red',
+            stroke: 'red',
+           strokeWidth: 4,
+            draggable: true
+        });
 		
-	//var bluspikes = new Konva.RegularPolygon({
-	//		x: 200,
-    //        y: 500,
-    //        sides: 3,
-    //        radius: 20,
-    //        fill: 'blue',
-    //        stroke: 'blue',
-    //        strokeWidth: 4,
-    //        draggable: true
-    //    });
+	var bluspikes = new Konva.RegularPolygon({
+			x: 200,
+            y: 500,
+            sides: 3,
+            radius: 20,
+           fill: 'blue',
+            stroke: 'blue',
+            strokeWidth: 4,
+           draggable: true
+       });
 		
-	//var platform = new Konva.RegularPolygon({
-	//		x: 350,
-	//		y: 500,
-	//		sides: 4,
-	//		radius: 50,
-	//		fill: 'black',
-	//		stroke: 'black',
-	//		strokeWidth: 4,
-	//		draggable: true
-    //    });
+	var platform = new Konva.RegularPolygon({
+			x: 350,
+			y: 500,
+			sides: 4,
+			radius: 50,
+			fill: 'black',
+			stroke: 'black',
+			strokeWidth: 4,
+			draggable: true
+        });
+	
+	redsquare.on('mousedown', function () {
+      var parent=redsquare.getClassName();
+	  console.log(parent);
+    });
+	
+	blusquare.on('mousedown', function () {
+		bottomGroup.removeName(blusquare);
+      blusquare.move({x: 50,y: 0});
+	  layer.draw();
+    });
 
     // add the shape to the layer
 	topGroup.add(redsquare);
@@ -130,33 +121,12 @@
 	bottomGroup.add(bluFloor);
 	layer.add(topGroup);
 	layer.add(bottomGroup);
-	//layer.add(redspikes);
-	//layer.add(bluspikes);
-	//layer.add(platform);
+	layer.add(redspikes);
+	layer.add(bluspikes);
+	layer.add(platform);
 
     // add the layer to the stage
     stage.add(layer);
-	
-	// add button event bindings
-    document.getElementById('redboxdown').addEventListener('click', function() {
-        redsquare.moveTo(bottomGroup);
-        layer.draw();
-    }, false);
-	
-	document.getElementById('redboxup').addEventListener('click', function() {
-        redsquare.moveTo(topGroup);
-        layer.draw();
-    }, false);
-
-    document.getElementById('bluboxup').addEventListener('click', function() {
-        blusquare.moveTo(topGroup);
-        layer.draw();
-    }, false);
-	
-	document.getElementById('bluboxdown').addEventListener('click', function() {
-        blusquare.moveTo(bottomGroup);
-        layer.draw();
-    }, false);
   </script>
 
 </body>
