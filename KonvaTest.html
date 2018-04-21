@@ -4,6 +4,7 @@
 
 <head>
   <script src="https://cdn.rawgit.com/konvajs/konva/2.0.2/konva.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <meta charset="utf-8">
   <title>Konva Custom Shape Demo</title>
   <style>
@@ -17,9 +18,12 @@
 </head>
 
 <body>
+	<button type="button" id="switch">Switch</button>
     <div id="container"></div>
   <script>
-    var stage = new Konva.Stage({
+    var color ='red';
+	
+	var stage = new Konva.Stage({
       container: 'container',
       width: window.innerWidth,
       height: window.innerHeight
@@ -35,6 +39,7 @@
         x: 50,
         y: 300,
     });
+	var hazards = new Konva.Group();
 	
 	var redsquare = new Konva.Rect({
         x: 0,
@@ -92,41 +97,104 @@
            draggable: true
        });
 		
-	var platform = new Konva.RegularPolygon({
-			x: 350,
-			y: 500,
-			sides: 4,
-			radius: 50,
-			fill: 'black',
-			stroke: 'black',
-			strokeWidth: 4,
+	var platform = new Konva.Rect({
+            x: 350,
+            y: 500,
+            width: 50,
+			height: 50,
+            fill: 'black',
+            stroke: 'black',
 			draggable: true
         });
-	
-	redsquare.on('mousedown', function () {
-      var parent=redsquare.getClassName();
-	  console.log(parent);
+		
+	var redcollisionbox = new Konva.Rect({
+        x: 100,
+        y: 600,
+        width: 20,
+        height: 20,
+        fill: 'red',
+        stroke: 'red',
+		name: 'redcollisionbox'
     });
 	
-	blusquare.on('mousedown', function () {
-		bottomGroup.removeName(blusquare);
-      blusquare.move({x: 50,y: 0});
-	  layer.draw();
+	var blucollisionbox = new Konva.Rect({
+        x: 200,
+        y: 600,
+        width: 20,
+        height: 20,
+        fill: 'blue',
+        stroke: 'blue',
+		name: 'blucollisionbox'
     });
+	
+	document.addEventListener('keydown', (event) => {
+	const keyName = event.key;
+	if(keyName=="ArrowRight"&&color=='red')
+	{
+		redsquare.move({x: 50,y: 0});
+		layer.draw();
+	}
+	  else if(keyName=="ArrowRight"&&color=='blue')
+	{
+		blusquare.move({x: 50,y: 0});
+		layer.draw();
+	}
+	else if(keyName=="ArrowLeft"&&color=='red')
+	{
+		redsquare.move({x: -50,y: 0});
+		layer.draw();
+	}
+	else if(keyName=="ArrowLeft"&&color=='blue')
+	{
+		blusquare.move({x: -50,y: 0});
+		layer.draw();
+	}
+	});
+	
+	$('#switch').click(function() {
+	if(color=='red')
+	{color='blue';}
+	else
+	{color='red';}
+	console.log(color);
+	});
 
     // add the shape to the layer
 	topGroup.add(redsquare);
 	topGroup.add(redFloor);
+	topGroup.add(redcollisionbox);
 	bottomGroup.add(blusquare);
 	bottomGroup.add(bluFloor);
+	bottomGroup.add(blucollisionbox);
+	hazards.add(redspikes);
+	hazards.add(bluspikes);
+	hazards.add(platform);
 	layer.add(topGroup);
 	layer.add(bottomGroup);
-	layer.add(redspikes);
-	layer.add(bluspikes);
-	layer.add(platform);
-
+	layer.add(hazards);
+	
     // add the layer to the stage
     stage.add(layer);
+	
+	layer.on('dragmove', function (e) {
+                if (haveIntersection(redspikes, redsquare)) {
+                    console.log('Red Collision!');
+                } 
+				if(haveIntersection(bluspikes,blusquare)) {
+                    console.log('Blue Collision!');
+                }
+                // do not need to call layer.draw() here
+                // because it will be called by dragmove action
+        })
+	
+	function haveIntersection(r1, r2) {
+            return (
+                r2.x > r1.x + r1.width ||
+                r2.x + r2.width < r1.x ||
+                r2.y > r1.y + r1.height ||
+                r2.y + r2.height < r1.y
+            );
+        }
   </script>
 
 </body>
