@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+ <script src="https://cdn.rawgit.com/konvajs/konva/2.0.2/konva.min.js"></script>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+ <script src="/socket.io/socket.io.js"></script>
+ <meta charset="utf-8">
+ <title>Konva Custom Shape Demo</title>
+ <style>
+   body {
+     margin: 0;
+     padding: 0;
+     overflow: hidden;
+     background-color: #F0F0F0;
+   }
+ </style>
+</head>
+
+<body>
+ <button type="button" id="switch">Switch</button>
+ <button type="button" id="test">Test</button>
+   <div id="container">
+     <div id="bluesquare">
+     </div>
+     <div id="redsquare">
+     </div>
+     <div id="platform">
+     </div>
+   </div>
+ <script>
+   var color ='red';
+
+ var stage = new Konva.Stage({
+     container: 'container',
+     width: window.innerWidth,
+     height: window.innerHeight
+   });
+
+   var layer = new Konva.Layer();
+
+  var topGroup = new Konva.Group({
+       x: 50,
+       y: 100,
+   });
+   var bottomGroup = new Konva.Group({
+       x: 50,
+       y: 300,
+   });
+ var hazards = new Konva.Group();
+
+ // MAKE INTO HTML ELEMENT
+ var redsquare = new Konva.Rect({
+       x: 0,
+       y: 75,
+       width: 20,
+       height: 20,
+       fill: 'red',
+       stroke: 'red'
+   });
+
+   //MAKE INTO HTML ELEMENT
+ var blusquare = new Konva.Rect({
+           x: 0,
+           y: 75,
+           width: 20,
+     height: 20,
+           fill: 'blue',
+           stroke: 'blue',
+       });
+
+ var redFloor = new Konva.Line({
+     points: [0, 100, 900, 100],
+     stroke: 'black',
+     strokeWidth: 10,
+     lineCap: 'round',
+     lineJoin: 'round'
+   });
+
+ var bluFloor = new Konva.Line({
+     points: [0, 100, 900, 100],
+     stroke: 'black',
+     strokeWidth: 10,
+     lineCap: 'round',
+     lineJoin: 'round'
+   });
+
+ var redspikes = new Konva.RegularPolygon({
+           x: 100,
+           y: 500,
+           sides: 3,
+           radius: 20,
+           fill: 'red',
+           stroke: 'red',
+          strokeWidth: 4,
+           draggable: true
+       });
+
+ var bluspikes = new Konva.RegularPolygon({
+     x: 200,
+           y: 500,
+           sides: 3,
+           radius: 20,
+          fill: 'blue',
+           stroke: 'blue',
+           strokeWidth: 4,
+          draggable: true
+      });
+
+ var platform = new Konva.Rect({
+           x: 350,
+           y: 500,
+           width: 50,
+     height: 50,
+           fill: 'black',
+           stroke: 'black',
+     draggable: true
+       });
+
+ var redcollisionbox = new Konva.Rect({
+       x: 100,
+       y: 600,
+       width: 20,
+       height: 20,
+       fill: 'red',
+       stroke: 'red',
+   name: 'redcollisionbox'
+   });
+
+ var blucollisionbox = new Konva.Rect({
+       x: 200,
+       y: 600,
+       width: 20,
+       height: 20,
+       fill: 'blue',
+       stroke: 'blue',
+   name: 'blucollisionbox'
+   });
+
+ document.addEventListener('keydown', (event) => {
+ const keyName = event.key;
+ if(keyName=="ArrowRight"&&color=='red')
+ {
+   redsquare.move({x: 50,y: 0});
+   layer.draw();
+ }
+   else if(keyName=="ArrowRight"&&color=='blue')
+ {
+   blusquare.move({x: 50,y: 0});
+   layer.draw();
+ }
+ else if(keyName=="ArrowLeft"&&color=='red')
+ {
+   redsquare.move({x: -50,y: 0});
+   layer.draw();
+ }
+ else if(keyName=="ArrowLeft"&&color=='blue')
+ {
+   blusquare.move({x: -50,y: 0});
+   layer.draw();
+ }
+ });
+
+ $('#switch').click(function() {
+ if(color=='red')
+ {color='blue';}
+ else
+ {color='red';}
+ console.log(color);
+ });
+
+   // add the shape to the layer
+ topGroup.add(redsquare);
+ topGroup.add(redFloor);
+ topGroup.add(redcollisionbox);
+ bottomGroup.add(blusquare);
+ bottomGroup.add(bluFloor);
+ bottomGroup.add(blucollisionbox);
+ hazards.add(redspikes);
+ hazards.add(bluspikes);
+ hazards.add(platform);
+ layer.add(topGroup);
+ layer.add(bottomGroup);
+ layer.add(hazards);
+
+   // add the layer to the stage
+   stage.add(layer);
+
+ layer.on('dragmove', function (e) {
+               if (haveIntersection(redspikes, redsquare)) {
+                   console.log('Red Collision!');
+               }
+       if(haveIntersection(bluspikes,blusquare)) {
+                   console.log('Blue Collision!');
+               }
+               // do not need to call layer.draw() here
+               // because it will be called by dragmove action
+       })
+
+ function haveIntersection(r1, r2) {
+           return (
+               r2.x > r1.x + r1.width ||
+               r2.x + r2.width < r1.x ||
+               r2.y > r1.y + r1.height ||
+               r2.y + r2.height < r1.y
+           );
+       }
+
+  //SOCKET.IO STUFF
+  //var socket = io.connect('http://cslab.kenyon.edu:8090');
+  $(document).ready(function() {
+    /*$("#redsquare").append(redsquare);
+    $("#bluesquare").append(blusquare);
+    $("#platform").append(platform);
+    console.log($("#platform").getBoundingClientRect());*/
+
+    var socket = io();
+    $("#test").click(function() {
+      var d = new Date();
+      socket.emit('test', d);
+    })
+
+    socket.on('test', function(d) {
+      alert("Test button clicked at: " + d);
+    });
+
+  })
+  //var pos = $("#platform").offset();
+  //console.log(pos.top + pos.left + pos.right + pos.bottom);
+  /*$(function() {
+    var socket = io();
+    $(platform).click(function() {
+      var pos = $(platform).offset();
+      socket.emit('position', pos);
+    });
+  });*/
+</script>
+
+</body>
+
+</html>
+
+
+<!--<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    //var socket = io.connect('http://cslab.kenyon.edu:8090');
+    var socket = io();
+  </script>
+</head>
+
+<body>
+  <h1>Hello everyone</h1>
+
+
+</body>
+
+</html>-->
