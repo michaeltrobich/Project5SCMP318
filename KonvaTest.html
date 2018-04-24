@@ -1,0 +1,253 @@
+ 
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://cdn.rawgit.com/konvajs/konva/2.0.2/konva.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <meta charset="utf-8">
+  <title>Konva Custom Shape Demo</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #ffffff;
+    }
+  </style>
+</head>
+
+<body>
+	<button type="button" id="switch">Switch</button>
+    <div id="container"></div>
+  <script>
+    var color ='red';
+	
+	var stage = new Konva.Stage({
+      container: 'container',
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+
+    var layer = new Konva.Layer();
+	
+	 var topGroup = new Konva.Group({
+        x: 50,
+        y: 100,
+    });
+    var bottomGroup = new Konva.Group({
+        x: 50,
+        y: 300,
+    });
+	
+	var redflag = new Image();
+	redflag.onload = function() {
+	var rflag = new Konva.Image({
+        x: 900,
+        y: 150,
+        image: redflag,
+        width: 50,
+        height: 50
+      });
+	  layer.add(rflag);
+	  stage.add(layer);
+	  }
+	  redflag.src = 'finishflag.png';
+	var bluflag = new Image();
+	bluflag.onload = function() {
+	var bflag = new Konva.Image({
+        x: 900,
+        y: 350,
+        image: bluflag,
+        width: 50,
+        height: 50
+      });
+	  layer.add(bflag);
+	  stage.add(layer);
+	  }
+	  bluflag.src = 'finishflag1.png';
+	
+      
+	  
+	  var bflag = new Konva.Image({
+	  x: 900,
+	  y: 310,
+	  image: bluflag,
+	  width: 50,
+	  height: 50
+	  });
+ 	
+	var redsquare = new Konva.Rect({
+        x: 0,
+        y: 75,
+        width: 20,
+        height: 20,
+        fill: 'red',
+        stroke: 'red',
+		hitFunc: function (context) {
+        context.beginPath();
+		context.rect(0, 0, redsquare.width(), redsquare.height());
+		context.closePath();
+		context.fillStrokeShape(this);
+      }
+    });
+		
+	var blusquare = new Konva.Rect({
+            x: 0,
+            y: 75,
+            width: 20,
+			height: 20,
+            fill: 'blue',
+            stroke: 'blue',
+			hitFunc: function (context) {
+        context.beginPath();
+		context.rect(0, 0 , blusquare.width(), blusquare.height());
+		context.closePath();
+		context.fillStrokeShape(this);
+      }
+        });
+		
+	var redFloor = new Konva.Line({
+      points: [0, 100, 900, 100],
+      stroke: 'black',
+      strokeWidth: 10,
+      lineCap: 'round',
+      lineJoin: 'round'
+    });
+	
+	var bluFloor = new Konva.Line({
+      points: [0, 100, 900, 100],
+      stroke: 'black',
+      strokeWidth: 10,
+      lineCap: 'round',
+      lineJoin: 'round'
+    });
+	
+	var redspikes = new Konva.RegularPolygon({
+            x: 100,
+            y: 500,
+            sides: 3,
+            radius: 20,
+            fill: 'red',
+            stroke: 'red',
+           strokeWidth: 4,
+            draggable: true
+        });
+		
+	var bluspikes = new Konva.RegularPolygon({
+			x: 200,
+            y: 300,
+            sides: 3,
+            radius: 20,
+           fill: 'blue',
+            stroke: 'blue',
+            strokeWidth: 4,
+           draggable: true
+       });
+		
+	var platform = new Konva.Rect({
+            x: 350,
+            y: 500,
+            width: 50,
+			height: 50,
+            fill: 'black',
+            stroke: 'black',
+			draggable: true
+        });
+	
+	document.addEventListener('keydown', (event) => {
+	const keyName = event.key;
+	if(keyName=="ArrowRight"&&color=='red'&&redsquare.x()<850)
+	{
+		redsquare.move({x: 25,y: 0});
+		layer.draw();
+	}
+	  else if(keyName=="ArrowRight"&&color=='blue'&&blusquare.x()<850)
+	{
+		blusquare.move({x: 25,y: 0});
+		layer.draw();
+	}
+	else if(keyName=="ArrowLeft"&&color=='red'&&redsquare.x()>0)
+	{
+		redsquare.move({x: -25,y: 0});
+		layer.draw();
+	}
+	else if(keyName=="ArrowLeft"&&color=='blue'&&blusquare.x()>0)
+	{
+		blusquare.move({x: -25,y: 0});
+		layer.draw();
+	}
+	});
+	
+	$('#switch').click(function() {
+	if(color=='red')
+	{color='blue';}
+	else
+	{color='red';}
+	console.log(color);
+	});
+
+    // add the shape to the layer
+	topGroup.add(redsquare);
+	topGroup.add(redFloor);
+	topGroup.add(redspikes);
+	bottomGroup.add(blusquare);
+	bottomGroup.add(bluFloor);
+	bottomGroup.add(bluspikes);
+	layer.add(topGroup);
+	layer.add(bottomGroup);
+	layer.add(platform);
+	
+    // add the layer to the stage
+    stage.add(layer);
+	
+	document.addEventListener('keydown', (event) => {
+				if (haveIntersection(redspikes, redsquare)) {
+                    console.log("redcollision");
+					reset();
+                } 
+				if (haveIntersection(bluspikes, blusquare)) {
+                    console.log("blucollision");
+					reset();
+                } 
+				if(haveIntersection(redsquare, platform)) {
+					redsquare.y((redsquare.getAbsolutePosition().y-100)-(redsquare.getAbsolutePosition().y-platform.getAbsolutePosition().y+((200-platform.getAbsolutePosition().y)/2)-.5));
+					layer.draw();
+				}
+				if(haveIntersection(blusquare, platform)) {
+					blusquare.y((blusquare.getAbsolutePosition().y-300)-(blusquare.getAbsolutePosition().y-platform.getAbsolutePosition().y+((400-platform.getAbsolutePosition().y)/2)-.5));
+					layer.draw();
+				}
+				if(redsquare.getAbsolutePosition().x > platform.getAbsolutePosition().x + platform.width() || platform.getAbsolutePosition().x + platform.width() < redsquare.getAbsolutePosition().x)
+				{
+					redsquare.y(75);
+					layer.draw();
+				}
+				if(blusquare.getAbsolutePosition().x > platform.getAbsolutePosition().x + platform.width() || platform.getAbsolutePosition().x + platform.width() < blusquare.getAbsolutePosition().x)
+				{
+					blusquare.y(75);
+					layer.draw();
+				}
+        });
+		
+		function haveIntersection(r1, r2) {
+            return !(
+                r2.getAbsolutePosition().x > r1.getAbsolutePosition().x + r1.width() ||
+                r2.getAbsolutePosition().x + r2.width() < r1.getAbsolutePosition().x ||
+                r2.getAbsolutePosition().y > r1.getAbsolutePosition().y + r1.height() ||
+                r2.getAbsolutePosition().y + r2.height() < r1.getAbsolutePosition().y
+            );
+        }
+		
+		function reset() {
+		redsquare.x(0);
+		redsquare.y(75);
+		blusquare.x(0);
+		blusquare.y(75);
+		layer.draw();
+		}
+  </script>
+
+</body>
+
+</html>
