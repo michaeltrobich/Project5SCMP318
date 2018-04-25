@@ -2,9 +2,9 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-app.get('/', function(req, res){
-  //res.send('<h1>Hello world</h1>');
-  res.sendFile(__dirname + '/index.html');
+app.get('/', function(req, res) {
+  //res.sendFile(__dirname + '/index.html');
+  res.sendFile(__dirname + '/level1.html');
 });
 
 /*var http = require('http');
@@ -50,18 +50,21 @@ io.on('connection', function(socket) {
   socket.on('disconnect', function() {
     console.log("A user disconnected");
   });
-  /*socket.on('position', function(pos) {
-    console.log("Platform position: " + pos.top +
-                pos.left + pos.right + pos.bottom);
-  });*/
 
-  socket.on('test', function(d) {
+  /*socket.on('test', function(d) {
     //console.log("Test clicked at: " + d);
     io.emit('test', d);
+  });*/
+
+  socket.on('platform_pos', function(pos) {
+    //io.sockets.emit('platform_pos', pos);
+    io.emit('platform_pos', pos);
   });
+
+
 });
 
-http.listen(3000, function(){
+http.listen(3000, function() {
   console.log('listening on *:3000');
 });
 
