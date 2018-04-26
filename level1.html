@@ -7,7 +7,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <meta charset="utf-8">
-  <title>Konva Custom Shape Demo</title>
+  <title>Friends.</title>
   <style>
     body {
       margin: 0;
@@ -19,38 +19,12 @@
 </head>
 
 <body>
-	<button type="button" id="switch">Switch</button>
     <div id="container"></div>
   <script>
     var color ='red';
-	var counter = 1;
-
-	var level1 = new Konva.Text({
-		x: 110,
-		y: 275,
-		fontSize: 30,
-		align: 'center',
-		text: 'These are friends. They\'re a team. That\'s what friends do.'
-	});
-
-	var level2 = new Konva.Text({
-		x: 110,
-		y: 275,
-		fontSize: 30,
-		align: 'center',
-		text: 'Friends have obstacles in their lives. They help each other.',
-		visible: false
-	});
-
-	var level3 = new Konva.Text({
-		x: 110,
-		y: 275,
-		fontSize: 30,
-		align: 'center',
-		text: 'Some obstacles are harder than others.',
-		visible: false
-	});
-
+	var level = 8;
+	
+	//First, the stage and the groups.
 	var stage = new Konva.Stage({
       container: 'container',
       width: window.innerWidth,
@@ -72,44 +46,89 @@
         x: 50,
         y: 300,
     });
+	
+	//Then, the level texts.
+	var level1 = new Konva.Text({
+		x: 110,
+		y: 275,
+		fontSize: 30,
+		align: 'center',
+		text: 'These are friends. They help each other. That\'s what friends do.'
+	});
 
-	var redflag = new Image();
-	redflag.onload = function() {
-	var rflag = new Konva.Image({
-        x: 900,
-        y: 150,
-        image: redflag,
-        width: 50,
-        height: 50
-      });
-	  layer.add(rflag);
-	  stage.add(layer);
-	  }
-	  redflag.src = 'finishflag.png';
-	var bluflag = new Image();
-	bluflag.onload = function() {
-	var bflag = new Konva.Image({
-        x: 900,
-        y: 350,
-        image: bluflag,
-        width: 50,
-        height: 50
-      });
-	  layer.add(bflag);
-	  stage.add(layer);
-	  }
-	  bluflag.src = 'finishflag1.png';
+	var level2 = new Konva.Text({
+		x: 110,
+		y: 275,
+		fontSize: 30,
+		align: 'center',
+		text: 'Friends have obstacles in their lives. Like mountains to climb.',
+		visible: false
+	});
 
+	var level3 = new Konva.Text({
+		x: 110,
+		y: 275,
+		fontSize: 30,
+		align: 'center',
+		text: 'Some mountains are harder than others.',
+		visible: false
+	});
+	
+	var level4 = new Konva.Text({
+		x: 110,
+		y: 275,
+		fontSize: 30,
+		align: 'center',
+		text: 'Sometimes, one friend\'s mountains may be higher.',
+		visible: false
+	});
+	
+	var level5 = new Konva.Text({
+		x: 110,
+		y: 275,
+		fontSize: 30,
+		align: 'center',
+		text: 'And sometimes, one can\'t see what the other\'s going through.',
+		visible: false
+	});
+	
+	var level6 = new Konva.Text({
+		x: 110,
+		y: 275,
+		fontSize: 30,
+		align: 'center',
+		text: 'We need help from our friends.',
+		visible: false
+	});
+	
+	var level7 = new Konva.Text({
+		x: 330,
+		y: 20,
+		fontSize: 30,
+		align: 'center',
+		text: 'We have mountains to climb.',
+		visible: false
+	});
+	
+	var level8 = new Konva.Text({
+		x: 100,
+		y: 500,
+		fontSize: 30,
+		align: 'center',
+		text: 'And sometimes, it feels like there\'s not enough to go around.',
+		visible: false
+	});
+	
+	var level9 = new Konva.Text({
+		x: 110,
+		y: 275,
+		fontSize: 30,
+		align: 'center',
+		text: 'But your friends aren\'t there to hurt you.',
+		visible: false
+	});
 
-
-	  var bflag = new Konva.Image({
-	  x: 900,
-	  y: 310,
-	  image: bluflag,
-	  width: 50,
-	  height: 50
-	  });
-
+	//The players.
 	var redsquare = new Konva.Rect({
         x: 0,
         y: 75,
@@ -139,7 +158,8 @@
 		context.fillStrokeShape(this);
       }
         });
-
+	
+	//Their platforms.
 	var redFloor = new Konva.Line({
       points: [0, 100, 900, 100],
       stroke: 'black',
@@ -155,8 +175,41 @@
       lineCap: 'round',
       lineJoin: 'round'
     });
-
+	
+	var platform = new Konva.Rect({
+            x: 50,
+            y: 262.5,
+            width: 50,
+			height: 50,
+            fill: 'black',
+            stroke: 'black',
+			draggable: true
+        });
+	
+	//And the hazards.
 	var redspikes = new Konva.RegularPolygon({
+            x: 100,
+            y: 500,
+            sides: 3,
+            radius: 20,
+            fill: 'red',
+            stroke: 'red',
+           strokeWidth: 4,
+			visible: false
+        });
+		
+	var bigredspikes = new Konva.RegularPolygon({
+            x: 100,
+            y: 500,
+            sides: 3,
+            radius: 100,
+            fill: 'red',
+            stroke: 'red',
+           strokeWidth: 4,
+			visible: false
+        });
+		
+	var moreredspikes = new Konva.RegularPolygon({
             x: 100,
             y: 500,
             sides: 3,
@@ -177,17 +230,95 @@
             strokeWidth: 4,
 		   visible: false
        });
-
-	var platform = new Konva.Rect({
-            x: 50,
-            y: 262.5,
-            width: 50,
-			height: 50,
-            fill: 'black',
-            stroke: 'black',
-			draggable: true
+	   
+	var bigbluspikes = new Konva.RegularPolygon({
+            x: 100,
+            y: 500,
+            sides: 3,
+            radius: 100,
+            fill: 'blue',
+            stroke: 'blue',
+           strokeWidth: 4,
+			visible: false
         });
-
+	   
+	var morebluspikes = new Konva.RegularPolygon({
+			x: 200,
+            y: 300,
+            sides: 3,
+            radius: 20,
+           fill: 'blue',
+            stroke: 'blue',
+            strokeWidth: 4,
+		   visible: false
+       });
+	
+	//Moving hazards, because more difficult = more fun.
+	var redlevel3anim = new Konva.Animation(function(frame) {
+		redspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 450);
+		}, layer);
+	
+	var blulevel3anim = new Konva.Animation(function(frame) {
+		bluspikes.setX(200 * Math.sin(frame.time * 2 * Math.PI / 4000) + 450);
+		}, layer);
+		
+	var redlevel4anim = new Konva.Animation(function(frame) {
+		bigredspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 450);
+		}, layer);
+		
+	var redlevel6anim1 = new Konva.Animation(function(frame) {
+		redspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 350);
+		}, layer);
+		
+	var redlevel6anim2 = new Konva.Animation(function(frame) {
+		moreredspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 550);
+		}, layer);
+		
+	var blulevel6anim1 = new Konva.Animation(function(frame) {
+		bluspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 350);
+		}, layer);
+		
+	var blulevel6anim2 = new Konva.Animation(function(frame) {
+		morebluspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 550);
+		}, layer);
+		
+	var redlevel8anim1 = new Konva.Animation(function(frame) {
+		redspikes.setY(50 * Math.sin(frame.time * 2 * Math.PI / 2000) + 35);
+		redspikes.setX(50 * Math.sin(frame.time * 2 * Math.PI / 1000) + 275);
+		}, layer);
+	
+	var redlevel8anim2 = new Konva.Animation(function(frame) {
+		moreredspikes.setY(50 * Math.sin(frame.time * 2 * Math.PI / 2000) + 35);
+		moreredspikes.setX(50 * Math.sin(frame.time * 2 * Math.PI / 1000) + 575);
+		}, layer);
+	
+	var blulevel8anim1 = new Konva.Animation(function(frame) {
+		bluspikes.setY(25 * Math.sin(frame.time * 2 * Math.PI / 500) + 60);
+		bluspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 300);
+		}, layer);
+	
+	var blulevel8anim2 = new Konva.Animation(function(frame) {
+		morebluspikes.setY(25 * Math.sin(frame.time * 2 * Math.PI / 500) + 60);
+		morebluspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 600);
+		}, layer);
+	
+	var redlevel9anim1 = new Konva.Animation(function(frame) {
+		redspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 350);
+		}, layer);
+	
+	var redlevel9anim2 = new Konva.Animation(function(frame) {
+		moreredspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 550);
+		}, layer);
+	
+	var blulevel9anim1 = new Konva.Animation(function(frame) {
+		bluspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 350);
+		}, layer);
+	
+	var blulevel9anim2 = new Konva.Animation(function(frame) {
+		morebluspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 550);
+		}, layer);
+	
+	//Player movement (and switching for local)
 	document.addEventListener('keydown', (event) => {
 	const keyName = event.key;
 	if(keyName=="ArrowRight"&&color=='red'&&redsquare.x()<850)
@@ -210,26 +341,44 @@
 		blusquare.move({x: -25,y: 0});
 		layer.draw();
 	}
-	});
-
-	$('#switch').click(function() {
-	if(color=='red')
-	{color='blue';}
-	else
-	{color='red';}
-	console.log(color);
+	if(keyName=="s")
+	{
+		if(color=='red')
+		{color='blue';}
+		else
+		{color='red';}
+	}
+	if(keyName=="s"&&(5<level&&level<9))
+	{
+		if(color=='red')
+		{topGroup.show();
+		bottomGroup.hide();}
+		else
+		{bottomGroup.show();
+		topGroup.hide();}
+	}
 	});
 
     // add the shape to the layer
 	topGroup.add(redsquare);
 	topGroup.add(redFloor);
 	topGroup.add(redspikes);
+	topGroup.add(bigredspikes);
+	topGroup.add(moreredspikes);
 	bottomGroup.add(blusquare);
 	bottomGroup.add(bluFloor);
 	bottomGroup.add(bluspikes);
+	bottomGroup.add(bigbluspikes);
+	bottomGroup.add(morebluspikes);
 	textGroup.add(level1);
 	textGroup.add(level2);
 	textGroup.add(level3);
+	textGroup.add(level4);
+	textGroup.add(level5);
+	textGroup.add(level6);
+	textGroup.add(level7);
+	textGroup.add(level8);
+	textGroup.add(level9);
 	layer.add(topGroup);
 	layer.add(bottomGroup);
 	layer.add(textGroup);
@@ -237,13 +386,30 @@
 
     // add the layer to the stage
     stage.add(layer);
-
+	
+	//Collision detection.
 	document.addEventListener('keydown', (event) => {
-				if (haveIntersection(redspikes, redsquare)) {
+				if (haveIntersection(redspikes, redsquare)&&redspikes.isVisible()==true) {
                     console.log("redcollision");
 					reset();
                 }
-				if (haveIntersection(bluspikes, blusquare)) {
+				if (haveIntersection(bigredspikes, redsquare)&&bigredspikes.isVisible()==true) {
+                    console.log("redcollision");
+					reset();
+                }
+				if (haveIntersection(moreredspikes, redsquare)&&moreredspikes.isVisible()==true) {
+                    console.log("redcollision");
+					reset();
+                }
+				if (haveIntersection(bluspikes, blusquare)&&bluspikes.isVisible()==true) {
+                    console.log("blucollision");
+					reset();
+                }
+				if (haveIntersection(bigbluspikes, blusquare)&&bigbluspikes.isVisible()==true) {
+                    console.log("blucollision");
+					reset();
+                }
+				if (haveIntersection(morebluspikes, blusquare)&&morebluspikes.isVisible()==true) {
                     console.log("blucollision");
 					reset();
                 }
@@ -268,30 +434,35 @@
 				if(redsquare.x()==850&&blusquare.x()==850)
 				{
 					reset();
-					counter=counter+1;
-					levelup(counter);
+					level=level+1;
+					levelup(level);
 				}
         });
 
 		function haveIntersection(r1, r2) {
             return !(
-                r2.getAbsolutePosition().x > r1.getAbsolutePosition().x + r1.width() ||
-                r2.getAbsolutePosition().x + r2.width() < r1.getAbsolutePosition().x ||
-                r2.getAbsolutePosition().y > r1.getAbsolutePosition().y + r1.height() ||
-                r2.getAbsolutePosition().y + r2.height() < r1.getAbsolutePosition().y
+                r2.getAbsolutePosition().x > r1.getAbsolutePosition().x + r1.width()+5 ||
+                r2.getAbsolutePosition().x + r2.width() < r1.getAbsolutePosition().x-5 ||
+                r2.getAbsolutePosition().y > r1.getAbsolutePosition().y + r1.height()-5 ||
+                r2.getAbsolutePosition().y + r2.height() < r1.getAbsolutePosition().y+5
             );
         }
-
+	
+	//Reset the level on a "death".
 		function reset() {
 		redsquare.x(0);
 		redsquare.y(75);
 		blusquare.x(0);
 		blusquare.y(75);
+		platform.x(50);
+		platform.y(262.5);
 		layer.draw();
 		}
-
-		function levelup(counter) {
-		if(counter==2)
+	
+	//How to go from one level to the next.
+		function levelup(level) {
+		console.log("Begin Level "+level);
+		if(level==2)
 		{
 			redspikes.x(450);
 			redspikes.y(85);
@@ -303,18 +474,144 @@
 			level2.show();
 			layer.draw();
 		}
-		if(counter==3)
+		if(level==3)
 		{
-			var redanim = new Konva.Animation(function(frame) {
-			redspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 450);
-			}, layer);
-			redanim.start();
-			var bluanim = new Konva.Animation(function(frame) {
-			bluspikes.setX(200 * Math.sin(frame.time * 2 * Math.PI / 4000) + 450);
-			}, layer);
-			bluanim.start();
+			redlevel3anim.start();
+			blulevel3anim.start();
 			level2.hide();
 			level3.show();
+			layer.draw();
+		}
+		if(level==4)
+		{
+			redlevel3anim.stop();
+			blulevel3anim.stop();
+			redspikes.hide();
+			bigredspikes.show();
+			bigredspikes.y(80);
+			redlevel4anim.start();
+			bluspikes.x(450);
+			bluspikes.y(85);
+			level3.hide();
+			level4.show();
+			layer.draw();
+		}
+		if(level==5)
+		{
+			bigredspikes.hide();
+			redspikes.show();
+			moreredspikes.show();
+			morebluspikes.show();
+			redlevel4anim.stop();
+			redspikes.x(300);
+			redspikes.y(85);
+			moreredspikes.x(600);
+			moreredspikes.y(85);
+			bluspikes.x(300);
+			bluspikes.y(85);
+			morebluspikes.x(600);
+			morebluspikes.y(85);
+			if(color=='red')
+			{bottomGroup.hide();}
+			else
+			{topGroup.hide();}
+			level4.hide();
+			level5.show();
+			layer.draw();
+		}
+		if(level==6)
+		{
+			blulevel6anim1.start();
+			blulevel6anim2.start();
+			redlevel6anim1.start();
+			redlevel6anim2.start();
+			if(color=='red')
+			{bottomGroup.hide();}
+			else
+			{topGroup.hide();}
+			level5.hide();
+			level6.show();
+			layer.draw();
+		}
+		if(level==7)
+		{
+			blulevel6anim1.stop();
+			blulevel6anim2.stop();
+			redlevel6anim1.stop();
+			redlevel6anim2.stop();
+			redspikes.hide();
+			moreredspikes.hide();
+			bluspikes.hide();
+			morebluspikes.hide();
+			bigredspikes.show();
+			bigredspikes.x(450);
+			bigredspikes.y(75);
+			bigbluspikes.show();
+			bigbluspikes.x(450);
+			bigbluspikes.y(75);
+			if(color=='red')
+			{bottomGroup.hide();}
+			else
+			{topGroup.hide();}
+			level6.hide();
+			level7.show();
+			layer.draw();
+		}
+		if(level==8)
+		{
+			redspikes.show();
+			moreredspikes.show();
+			bigredspikes.show();
+			redspikes.x(300);
+			redspikes.y(85);
+			moreredspikes.x(600);
+			moreredspikes.y(85);
+			bigredspikes.x(450);
+			bigredspikes.y(75);
+			bluspikes.show();
+			morebluspikes.show();
+			bigbluspikes.show();
+			bluspikes.x(300);
+			bluspikes.y(85);
+			morebluspikes.x(600);
+			morebluspikes.y(85);
+			bigbluspikes.x(450);
+			bigbluspikes.y(75);
+			blulevel8anim1.start();
+			blulevel8anim2.start();
+			redlevel8anim1.start();
+			redlevel8anim2.start();
+			level7.hide();
+			level8.show()
+			layer.draw();
+		}
+		if(level==9)
+		{
+			blulevel8anim1.stop();
+			blulevel8anim2.stop();
+			redlevel8anim1.stop();
+			redlevel8anim2.stop();
+			topGroup.show();
+			redspikes.show();
+			moreredspikes.show();
+			bottomGroup.show();
+			bluspikes.show();
+			morebluspikes.show();
+			redspikes.x(300);
+			redspikes.y(285);
+			moreredspikes.x(600);
+			moreredspikes.y(285);
+			bluspikes.x(300);
+			bluspikes.y(-115);
+			morebluspikes.x(600);
+			morebluspikes.y(-115);
+			blulevel9anim1.start();
+			blulevel9anim2.start();
+			redlevel9anim1.start();
+			redlevel9anim2.start();
+			level8.hide();
+			level1.hide()
+			level9.show();
 			layer.draw();
 		}
 		}
@@ -340,7 +637,6 @@
     socket.on('platform_pos', function(pos) {
       //move platform to new position
       //WON'T MOVE SPONTANEOUSLY, ONLY AFTER CLICKING
-      console.log(pos.x, pos.y);
       platform.setAbsolutePosition(pos);
       layer.draw();
       //platform.move({x: pos.x - platform.getAbsolutePosition().x,
