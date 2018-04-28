@@ -26,7 +26,7 @@
   var color;
 
   socket.on('setColor', function(id) {
-    if(id == "blue") {
+    if (id == "blue") {
       color = 'blue';
       console.log(color);
     }
@@ -39,7 +39,8 @@
 
   //KONVA STUFF
   //var color ='red';
-	var level = 8;
+	//var level = 8;
+  var level = 1;
 
 	//First, the stage and the groups.
 	var stage = new Konva.Stage({
@@ -381,6 +382,7 @@
   data.color = color;
   data.redpos = redsquare.getAbsolutePosition();
   data.bluepos = blusquare.getAbsolutePosition();
+  console.log(data.redpos);
 
   socket.emit('square_pos', data);
 	});
@@ -459,9 +461,11 @@
 				}
 				if(redsquare.x()==850&&blusquare.x()==850)
 				{
-					reset();
+					//reset();
 					level=level+1;
-					levelup(level);
+					//levelup(level);
+          //SOCKET.IO STUFF
+          socket.emit('level', level);
 				}
         });
 
@@ -657,6 +661,12 @@
         layer.draw();
         //console.log(data.redpos);
       }
+    });
+
+    //LEVEL SYNCHRONIZATION
+    socket.on('level', function(level) {
+      reset();
+      levelup(level);
     })
 
     //PLATFORM SYNCHRONIZATION

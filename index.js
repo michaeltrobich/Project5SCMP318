@@ -70,6 +70,13 @@ io.on('connection', function(socket) {
     console.log(socket.id + " user disconnected");
   });
 
+  //LEVEL SYNCHRONIZATION
+  socket.on('level', function(level) {
+    io.emit('level', level);
+    console.log("Level " + level);
+  });
+
+  //POSITION SYNCHRONIZATION
   socket.on('platform_pos', function(pos) {
     //io.sockets.emit('platform_pos', pos);
     io.emit('platform_pos', pos);
