@@ -21,9 +21,26 @@
 <body>
     <div id="container"></div>
   <script>
-    var color ='red';
+  //SOCKET.IO STUFF
+  var socket = io();
+  var color;
+
+  socket.on('setColor', function(id) {
+    if(id == "blue") {
+      color = 'blue';
+      console.log(color);
+    }
+    else if (id == "red") {
+      color = 'red';
+      console.log(color);
+    }
+  });
+
+
+  //KONVA STUFF
+  //var color ='red';
 	var level = 8;
-	
+
 	//First, the stage and the groups.
 	var stage = new Konva.Stage({
       container: 'container',
@@ -46,7 +63,7 @@
         x: 50,
         y: 300,
     });
-	
+
 	//Then, the level texts.
 	var level1 = new Konva.Text({
 		x: 110,
@@ -73,7 +90,7 @@
 		text: 'Some mountains are harder than others.',
 		visible: false
 	});
-	
+
 	var level4 = new Konva.Text({
 		x: 110,
 		y: 275,
@@ -82,7 +99,7 @@
 		text: 'Sometimes, one friend\'s mountains may be higher.',
 		visible: false
 	});
-	
+
 	var level5 = new Konva.Text({
 		x: 110,
 		y: 275,
@@ -91,7 +108,7 @@
 		text: 'And sometimes, one can\'t see what the other\'s going through.',
 		visible: false
 	});
-	
+
 	var level6 = new Konva.Text({
 		x: 110,
 		y: 275,
@@ -100,7 +117,7 @@
 		text: 'We need help from our friends.',
 		visible: false
 	});
-	
+
 	var level7 = new Konva.Text({
 		x: 330,
 		y: 20,
@@ -109,7 +126,7 @@
 		text: 'We have mountains to climb.',
 		visible: false
 	});
-	
+
 	var level8 = new Konva.Text({
 		x: 100,
 		y: 500,
@@ -118,7 +135,7 @@
 		text: 'And sometimes, it feels like there\'s not enough to go around.',
 		visible: false
 	});
-	
+
 	var level9 = new Konva.Text({
 		x: 110,
 		y: 275,
@@ -158,7 +175,7 @@
 		context.fillStrokeShape(this);
       }
         });
-	
+
 	//Their platforms.
 	var redFloor = new Konva.Line({
       points: [0, 100, 900, 100],
@@ -175,7 +192,7 @@
       lineCap: 'round',
       lineJoin: 'round'
     });
-	
+
 	var platform = new Konva.Rect({
             x: 50,
             y: 262.5,
@@ -185,7 +202,7 @@
             stroke: 'black',
 			draggable: true
         });
-	
+
 	//And the hazards.
 	var redspikes = new Konva.RegularPolygon({
             x: 100,
@@ -197,7 +214,7 @@
            strokeWidth: 4,
 			visible: false
         });
-		
+
 	var bigredspikes = new Konva.RegularPolygon({
             x: 100,
             y: 500,
@@ -208,7 +225,7 @@
            strokeWidth: 4,
 			visible: false
         });
-		
+
 	var moreredspikes = new Konva.RegularPolygon({
             x: 100,
             y: 500,
@@ -230,7 +247,7 @@
             strokeWidth: 4,
 		   visible: false
        });
-	   
+
 	var bigbluspikes = new Konva.RegularPolygon({
             x: 100,
             y: 500,
@@ -241,7 +258,7 @@
            strokeWidth: 4,
 			visible: false
         });
-	   
+
 	var morebluspikes = new Konva.RegularPolygon({
 			x: 200,
             y: 300,
@@ -252,72 +269,72 @@
             strokeWidth: 4,
 		   visible: false
        });
-	
+
 	//Moving hazards, because more difficult = more fun.
 	var redlevel3anim = new Konva.Animation(function(frame) {
 		redspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 450);
 		}, layer);
-	
+
 	var blulevel3anim = new Konva.Animation(function(frame) {
 		bluspikes.setX(200 * Math.sin(frame.time * 2 * Math.PI / 4000) + 450);
 		}, layer);
-		
+
 	var redlevel4anim = new Konva.Animation(function(frame) {
 		bigredspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 450);
 		}, layer);
-		
+
 	var redlevel6anim1 = new Konva.Animation(function(frame) {
 		redspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 350);
 		}, layer);
-		
+
 	var redlevel6anim2 = new Konva.Animation(function(frame) {
 		moreredspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 550);
 		}, layer);
-		
+
 	var blulevel6anim1 = new Konva.Animation(function(frame) {
 		bluspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 350);
 		}, layer);
-		
+
 	var blulevel6anim2 = new Konva.Animation(function(frame) {
 		morebluspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 550);
 		}, layer);
-		
+
 	var redlevel8anim1 = new Konva.Animation(function(frame) {
 		redspikes.setY(50 * Math.sin(frame.time * 2 * Math.PI / 2000) + 35);
 		redspikes.setX(50 * Math.sin(frame.time * 2 * Math.PI / 1000) + 275);
 		}, layer);
-	
+
 	var redlevel8anim2 = new Konva.Animation(function(frame) {
 		moreredspikes.setY(50 * Math.sin(frame.time * 2 * Math.PI / 2000) + 35);
 		moreredspikes.setX(50 * Math.sin(frame.time * 2 * Math.PI / 1000) + 575);
 		}, layer);
-	
+
 	var blulevel8anim1 = new Konva.Animation(function(frame) {
 		bluspikes.setY(25 * Math.sin(frame.time * 2 * Math.PI / 500) + 60);
 		bluspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 300);
 		}, layer);
-	
+
 	var blulevel8anim2 = new Konva.Animation(function(frame) {
 		morebluspikes.setY(25 * Math.sin(frame.time * 2 * Math.PI / 500) + 60);
 		morebluspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 600);
 		}, layer);
-	
+
 	var redlevel9anim1 = new Konva.Animation(function(frame) {
 		redspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 350);
 		}, layer);
-	
+
 	var redlevel9anim2 = new Konva.Animation(function(frame) {
 		moreredspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 550);
 		}, layer);
-	
+
 	var blulevel9anim1 = new Konva.Animation(function(frame) {
 		bluspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 350);
 		}, layer);
-	
+
 	var blulevel9anim2 = new Konva.Animation(function(frame) {
 		morebluspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 550);
 		}, layer);
-	
+
 	//Player movement (and switching for local)
 	document.addEventListener('keydown', (event) => {
 	const keyName = event.key;
@@ -357,6 +374,15 @@
 		{bottomGroup.show();
 		topGroup.hide();}
 	}
+
+  //SOCKET.IO STUFF:
+  //SEND NEW POSITION DATA TO SERVER
+  var data = {};
+  data.color = color;
+  data.redpos = redsquare.getAbsolutePosition();
+  data.bluepos = blusquare.getAbsolutePosition();
+
+  socket.emit('square_pos', data);
 	});
 
     // add the shape to the layer
@@ -386,7 +412,7 @@
 
     // add the layer to the stage
     stage.add(layer);
-	
+
 	//Collision detection.
 	document.addEventListener('keydown', (event) => {
 				if (haveIntersection(redspikes, redsquare)&&redspikes.isVisible()==true) {
@@ -447,7 +473,7 @@
                 r2.getAbsolutePosition().y + r2.height() < r1.getAbsolutePosition().y+5
             );
         }
-	
+
 	//Reset the level on a "death".
 		function reset() {
 		redsquare.x(0);
@@ -458,7 +484,7 @@
 		platform.y(262.5);
 		layer.draw();
 		}
-	
+
 	//How to go from one level to the next.
 		function levelup(level) {
 		console.log("Begin Level "+level);
@@ -616,32 +642,36 @@
 		}
 		}
 
-    //SOCKET.IO STUFF
-    var socket = io();
-    /*$("#test").click(function() {
-      var d = new Date();
-      socket.emit('test', d);
+    //MORE SOCKET.IO STUFF
+
+    //CHARACTER SYNCHRONIZATION
+    socket.on('square_pos', function(data) {
+      //console.log(data);
+      if (color == 'red' && data.color == 'blue') {
+        blusquare.setAbsolutePosition(data.bluepos);
+        layer.draw(); //is this right?? need to be changed?
+        //console.log(data.bluepos);
+      }
+      else if (color == 'blue' && data.color == 'red') {
+        redsquare.setAbsolutePosition(data.redpos);
+        layer.draw();
+        //console.log(data.redpos);
+      }
     })
 
-    socket.on('test', function(d) {
-      alert("Test button clicked at: " + d);
-    });*/
-
+    //PLATFORM SYNCHRONIZATION
     platform.on('dragmove', function() {
       var pos = platform.getAbsolutePosition();
-      //console.log(pos.x, pos.y);
       socket.emit('platform_pos', pos);
-      //console.log(pos.x, pos.y)
-    })
+      console.log(pos.x, pos.y)
+    });
 
     socket.on('platform_pos', function(pos) {
       //move platform to new position
-      //WON'T MOVE SPONTANEOUSLY, ONLY AFTER CLICKING
       platform.setAbsolutePosition(pos);
       layer.draw();
-      //platform.move({x: pos.x - platform.getAbsolutePosition().x,
-      //               y: pos.y - platform.getAbsolutePosition().y});
-    })
+    });
+
   </script>
 
 </body>
