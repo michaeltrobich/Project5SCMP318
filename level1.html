@@ -359,22 +359,6 @@
 		blusquare.move({x: -25,y: 0});
 		layer.draw();
 	}
-	if(keyName=="s")
-	{
-		if(color=='red')
-		{color='blue';}
-		else
-		{color='red';}
-	}
-	if(keyName=="s"&&(5<level&&level<9))
-	{
-		if(color=='red')
-		{topGroup.show();
-		bottomGroup.hide();}
-		else
-		{bottomGroup.show();
-		topGroup.hide();}
-	}
 
   //SOCKET.IO STUFF:
   //SEND NEW POSITION DATA TO SERVER
