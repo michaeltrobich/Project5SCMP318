@@ -403,27 +403,33 @@
 	document.addEventListener('keydown', (event) => {
 				if (haveIntersection(redspikes, redsquare)&&redspikes.isVisible()==true) {
                     console.log("redcollision");
-					reset();
+					//reset();
+          socket.emit('reset', true);
                 }
 				if (haveIntersection(bigredspikes, redsquare)&&bigredspikes.isVisible()==true) {
                     console.log("redcollision");
-					reset();
+					//reset();
+          socket.emit('reset', true);
                 }
 				if (haveIntersection(moreredspikes, redsquare)&&moreredspikes.isVisible()==true) {
                     console.log("redcollision");
-					reset();
+					//reset();
+          socket.emit('reset', true);
                 }
 				if (haveIntersection(bluspikes, blusquare)&&bluspikes.isVisible()==true) {
                     console.log("blucollision");
-					reset();
+					//reset();
+          socket.emit('reset', true);
                 }
 				if (haveIntersection(bigbluspikes, blusquare)&&bigbluspikes.isVisible()==true) {
                     console.log("blucollision");
-					reset();
+					//reset();
+          socket.emit('reset', true);
                 }
 				if (haveIntersection(morebluspikes, blusquare)&&morebluspikes.isVisible()==true) {
                     console.log("blucollision");
-					reset();
+					//reset();
+          socket.emit('reset', true);
                 }
 				if(haveIntersection(redsquare, platform)) {
 					redsquare.y((redsquare.getAbsolutePosition().y-100)-(redsquare.getAbsolutePosition().y-platform.getAbsolutePosition().y+((200-platform.getAbsolutePosition().y)/2)-.5));
@@ -651,6 +657,13 @@
     socket.on('level', function(level) {
       reset();
       levelup(level);
+    });
+
+    socket.on('reset', function(x) {
+      console.log(x);
+      if (x) {
+        reset();
+      }
     })
 
     //PLATFORM SYNCHRONIZATION

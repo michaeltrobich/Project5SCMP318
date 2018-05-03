@@ -76,6 +76,11 @@ io.on('connection', function(socket) {
     console.log("Level " + level);
   });
 
+  socket.on('reset', function(x) {
+    io.emit('reset', x);
+    console.log("Level reset!");
+  });
+
   //POSITION SYNCHRONIZATION
   socket.on('platform_pos', function(pos) {
     //io.sockets.emit('platform_pos', pos);
