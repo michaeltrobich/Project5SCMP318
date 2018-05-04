@@ -28,19 +28,25 @@
   socket.on('setColor', function(id) {
     if (id == "blue") {
       color = 'blue';
-      console.log(color);
     }
     else if (id == "red") {
       color = 'red';
       console.log(color);
+	  blusquare.hide();
+	  layer.draw();
     }
   });
-
 
   //KONVA STUFF
   //var color ='red';
 	//var level = 8;
-  var level = 1;
+  var level = 0;
+  
+  socket.on('start', function() {
+  level = 1;
+  reset();
+  levelup(level);
+  });
 
 	//First, the stage and the groups.
 	var stage = new Konva.Stage({
@@ -66,12 +72,30 @@
     });
 
 	//Then, the level texts.
+	
+	var player = new Konva.Text({
+		x: 500,
+		y: 300,
+		fontSize: 60,
+		align: 'center',
+		text: 'You are: '
+	});
+	
+	var loading = new Konva.Text({
+		x: 500,
+		y: 500,
+		fontSize: 60,
+		align: 'center',
+		text: 'Waiting for friend...'
+	});
+	
 	var level1 = new Konva.Text({
 		x: 110,
 		y: 275,
 		fontSize: 30,
 		align: 'center',
-		text: 'These are friends. They help each other. That\'s what friends do.'
+		text: 'These are friends. They help each other. That\'s what friends do.',
+		visible: false
 	});
 
 	var level2 = new Konva.Text({
@@ -145,11 +169,20 @@
 		text: 'But your friends aren\'t there to hurt you.',
 		visible: false
 	});
+	
+	var level10 = new Konva.Text({
+		x: 110,
+		y: 275,
+		fontSize: 30,
+		align: 'center',
+		text: 'Friends help you. That\'s what friends do.',
+		visible: false
+	});
 
 	//The players.
 	var redsquare = new Konva.Rect({
-        x: 0,
-        y: 75,
+        x: 750,
+        y: 225,
         width: 20,
         height: 20,
         fill: 'red',
@@ -163,12 +196,13 @@
     });
 
 	var blusquare = new Konva.Rect({
-            x: 0,
-            y: 75,
+            x: 750,
+            y: 225,
             width: 20,
 			height: 20,
             fill: 'blue',
             stroke: 'blue',
+			visible: false,
 			hitFunc: function (context) {
         context.beginPath();
 		context.rect(0, 0 , blusquare.width(), blusquare.height());
@@ -183,7 +217,8 @@
       stroke: 'black',
       strokeWidth: 10,
       lineCap: 'round',
-      lineJoin: 'round'
+      lineJoin: 'round',
+	  visible: false
     });
 
 	var bluFloor = new Konva.Line({
@@ -191,7 +226,8 @@
       stroke: 'black',
       strokeWidth: 10,
       lineCap: 'round',
-      lineJoin: 'round'
+      lineJoin: 'round',
+	  visible : false
     });
 
 	var platform = new Konva.Rect({
@@ -201,7 +237,8 @@
 			height: 50,
             fill: 'black',
             stroke: 'black',
-			draggable: true
+			draggable: true,
+			visible: false
         });
 
 	//And the hazards.
@@ -382,6 +419,8 @@
 	bottomGroup.add(bluspikes);
 	bottomGroup.add(bigbluspikes);
 	bottomGroup.add(morebluspikes);
+	textGroup.add(player);
+	textGroup.add(loading);
 	textGroup.add(level1);
 	textGroup.add(level2);
 	textGroup.add(level3);
@@ -391,6 +430,7 @@
 	textGroup.add(level7);
 	textGroup.add(level8);
 	textGroup.add(level9);
+	textGroup.add(level10);
 	layer.add(topGroup);
 	layer.add(bottomGroup);
 	layer.add(textGroup);
@@ -398,6 +438,7 @@
 
     // add the layer to the stage
     stage.add(layer);
+	
 
 	//Collision detection.
 	document.addEventListener('keydown', (event) => {
@@ -407,6 +448,16 @@
           socket.emit('reset', true);
                 }
 				if (haveIntersection(bigredspikes, redsquare)&&bigredspikes.isVisible()==true) {
+                    console.log("redcollision");
+					//reset();
+          socket.emit('reset', true);
+                }
+				if (haveIntersection(redspikes, redsquare)&&redspikes.isVisible()==false&&level>=10) {
+                    console.log("redcollision");
+					//reset();
+          socket.emit('reset', true);
+                }
+				if (haveIntersection(moreredspikes, redsquare)&&moreredspikes.isVisible()==false&&level>=10) {
                     console.log("redcollision");
 					//reset();
           socket.emit('reset', true);
@@ -427,6 +478,16 @@
           socket.emit('reset', true);
                 }
 				if (haveIntersection(morebluspikes, blusquare)&&morebluspikes.isVisible()==true) {
+                    console.log("blucollision");
+					//reset();
+          socket.emit('reset', true);
+                }
+				if (haveIntersection(bluspikes, blusquare)&&bluspikes.isVisible()==false&&level>=10) {
+                    console.log("blucollision");
+					//reset();
+          socket.emit('reset', true);
+                }
+				if (haveIntersection(morebluspikes, blusquare)&&morebluspikes.isVisible()==false&&level>=10) {
                     console.log("blucollision");
 					//reset();
           socket.emit('reset', true);
@@ -482,6 +543,19 @@
 	//How to go from one level to the next.
 		function levelup(level) {
 		console.log("Begin Level "+level);
+		if(level==1)
+		{
+			player.hide();
+			loading.hide();
+			redsquare.x(0);
+			redsquare.y(75);
+			blusquare.show();
+			level1.show();
+			redFloor.show();
+			bluFloor.show();
+			platform.show();
+			layer.draw();
+		}
 		if(level==2)
 		{
 			redspikes.x(450);
@@ -632,6 +706,32 @@
 			level8.hide();
 			level1.hide()
 			level9.show();
+			layer.draw();
+		}
+		if(level==10)
+		{
+			blulevel9anim1.stop();
+			blulevel9anim2.stop();
+			redlevel9anim1.stop();
+			redlevel9anim2.stop();
+			redspikes.x(300);
+			redspikes.y(85);
+			moreredspikes.x(600);
+			moreredspikes.y(85);
+			bigredspikes.hide();
+			bluspikes.x(300);
+			bluspikes.y(85);
+			morebluspikes.x(600);
+			morebluspikes.y(85);
+			bigbluspikes.hide();
+			if(color=='red')
+			{redspikes.hide();
+			moreredspikes.hide();}
+			else
+			{bluspikes.hide();
+			morebluspikes.hide();}
+			level9.hide();
+			level10.show();
 			layer.draw();
 		}
 		}

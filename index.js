@@ -62,7 +62,10 @@ io.on('connection', function(socket) {
   }
   console.log(socket.id + " user connected");
   console.log(io.sockets.server.eio.clientsCount + " users connected");
-
+  
+  if(io.sockets.server.eio.clientsCount==2)
+  {io.emit('start');}
+  
   // send user id (color) to client
   socket.emit('setColor', id);
 
