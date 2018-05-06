@@ -38,6 +38,13 @@
     }
   });
 
+  socket.on('full', function(x) {
+    if (x) {
+      alert("Sorry, the game is full!");
+    }
+    socket.emit('disconnect');
+  });
+
   //KONVA STUFF
   //var color ='red';
 	//var level = 8;

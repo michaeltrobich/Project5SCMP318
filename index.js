@@ -61,6 +61,11 @@ io.on('connection', function(socket) {
     var id = socket.id;
     io.emit('start', true);
   }
+  else {
+    socket.id = 'null';
+    socket.emit('full', true);
+    socket.disconnect(true);
+  }
   console.log(socket.id + " user connected");
   console.log(io.sockets.server.eio.clientsCount + " users connected");
 
