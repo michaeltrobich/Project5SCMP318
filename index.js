@@ -47,25 +47,23 @@ var io = require('socket.io').listen(server);*/
 
 io.on('connection', function(socket) {
   //user 1 is red, user 2 is blue
-  if (io.sockets.server.eio.clientsCount > 2) {
+  /*if (io.sockets.server.eio.clientsCount > 2) {
     //block all connections... somehow
     //STILL NEED TO WORK ON THIS
     socket.disconnect(0);
-  }
-  if (io.sockets.server.eio.clientsCount % 2) {
+  }*/
+  if (io.sockets.server.eio.clientsCount == 1) {
     socket.id = 'red';
     var id = socket.id;
   }
-  else {
+  else if (io.sockets.server.eio.clientsCount == 2) {
     socket.id = 'blue';
     var id = socket.id;
+    io.emit('start', true);
   }
   console.log(socket.id + " user connected");
   console.log(io.sockets.server.eio.clientsCount + " users connected");
-  
-  if(io.sockets.server.eio.clientsCount==2)
-  {io.emit('start');}
-  
+
   // send user id (color) to client
   socket.emit('setColor', id);
 
@@ -86,12 +84,10 @@ io.on('connection', function(socket) {
 
   //POSITION SYNCHRONIZATION
   socket.on('platform_pos', function(pos) {
-    //io.sockets.emit('platform_pos', pos);
     io.emit('platform_pos', pos);
   });
 
   socket.on('square_pos', function(data) {
-    //console.log(data);
     io.emit('square_pos', data);
   });
 
