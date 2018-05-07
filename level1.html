@@ -86,17 +86,17 @@
 	//Then, the level texts.
 
 	var player = new Konva.Text({
-		x: 500,
-		y: 300,
-		fontSize: 60,
+		x: 100,
+		y: 100,
+		fontSize: 45,
 		align: 'center',
 		text: 'You are: '
 	});
 
 	var loading = new Konva.Text({
-		x: 500,
-		y: 500,
-		fontSize: 60,
+		x: 100,
+		y: 300,
+		fontSize: 45,
 		align: 'center',
 		text: 'Waiting for friend...'
 	});
@@ -190,11 +190,29 @@
 		text: 'Friends help you. That\'s what friends do.',
 		visible: false
 	});
+	
+	var congratulations = new Konva.Text({
+		x: 400,
+		y: 200,
+		fontSize: 30,
+		align: 'center',
+		text: 'Congratulations!',
+		visible: false
+	});
+	
+	var win = new Konva.Text({
+		x: 450,
+		y: 300,
+		fontSize: 30,
+		align: 'center',
+		text: 'You won!',
+		visible: false
+	});
 
 	//The players.
-	var redsquare = new Konva.Rect({
-        x: 750,
-        y: 225,
+	var redsquare = new Konva.Circle({
+        x: 150,
+        y: 100,
         width: 20,
         height: 20,
         fill: 'red',
@@ -207,9 +225,9 @@
       }
     });
 
-	var blusquare = new Konva.Rect({
+	var blusquare = new Konva.Circle({
             x: 750,
-            y: 225,
+            y: 200,
             width: 20,
 			height: 20,
             fill: 'blue',
@@ -241,6 +259,34 @@
       lineJoin: 'round',
 	  visible : false
     });
+	
+	<!-- var redflag = new Image(); -->
+	<!-- redflag.onload = function() { -->
+	<!-- var rflag = new Konva.Image({ -->
+        <!-- x: 900, -->
+        <!-- y: 150, -->
+        <!-- image: redflag, -->
+        <!-- width: 50, -->
+        <!-- height: 50, -->
+		<!-- visible: false -->
+      <!-- }); -->
+	  <!-- topGroup.add(rflag); -->
+	  <!-- } -->
+	  <!-- redflag.src = 'https://cslab.kenyon.edu/class/softdev/trobichm/KonvaTest/finishflag.png'; -->
+	  
+	<!-- var bluflag = new Image(); -->
+	<!-- bluflag.onload = function() { -->
+	<!-- var bflag = new Konva.Image({ -->
+        <!-- x: 900, -->
+        <!-- y: 350, -->
+        <!-- image: bluflag, -->
+        <!-- width: 50, -->
+        <!-- height: 50, -->
+		<!-- visible: false -->
+      <!-- }); -->
+	  <!-- bottomGroup.add(bflag); -->
+	  <!-- } -->
+	  <!-- bluflag.src = 'https://cslab.kenyon.edu/class/softdev/trobichm/KonvaTest/finishflag1.png'; -->
 
 	var platform = new Konva.Rect({
             x: 50,
@@ -269,7 +315,7 @@
             x: 100,
             y: 500,
             sides: 3,
-            radius: 100,
+            radius: 80,
             fill: 'red',
             stroke: 'red',
            strokeWidth: 4,
@@ -302,7 +348,7 @@
             x: 100,
             y: 500,
             sides: 3,
-            radius: 100,
+            radius: 80,
             fill: 'blue',
             stroke: 'blue',
            strokeWidth: 4,
@@ -327,10 +373,6 @@
 
 	var blulevel3anim = new Konva.Animation(function(frame) {
 		bluspikes.setX(200 * Math.sin(frame.time * 2 * Math.PI / 4000) + 450);
-		}, layer);
-
-	var redlevel4anim = new Konva.Animation(function(frame) {
-		bigredspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 450);
 		}, layer);
 
 	var redlevel6anim1 = new Konva.Animation(function(frame) {
@@ -388,22 +430,22 @@
 	//Player movement (and switching for local)
 	document.addEventListener('keydown', (event) => {
 	const keyName = event.key;
-	if(keyName=="ArrowRight"&&color=='red'&&redsquare.getAbsolutePosition().x<850)
+	if(keyName=="ArrowRight"&&color=='red'&&redsquare.getAbsolutePosition().x<900&&level>0)
 	{
 		redsquare.move({x: 25,y: 0});
 		layer.draw();
 	}
-	  else if(keyName=="ArrowRight"&&color=='blue'&&blusquare.getAbsolutePosition().x<850)
+	  else if(keyName=="ArrowRight"&&color=='blue'&&blusquare.getAbsolutePosition().x<900&&level>0)
 	{
 		blusquare.move({x: 25,y: 0});
 		layer.draw();
 	}
-	else if(keyName=="ArrowLeft"&&color=='red'&&redsquare.getAbsolutePosition().x>0)
+	else if(keyName=="ArrowLeft"&&color=='red'&&redsquare.getAbsolutePosition().x>50&&level>0)
 	{
 		redsquare.move({x: -25,y: 0});
 		layer.draw();
 	}
-	else if(keyName=="ArrowLeft"&&color=='blue'&&blusquare.getAbsolutePosition().x>0)
+	else if(keyName=="ArrowLeft"&&color=='blue'&&blusquare.getAbsolutePosition().x>50&&level>0)
 	{
 		blusquare.move({x: -25,y: 0});
 		layer.draw();
@@ -442,6 +484,8 @@
 	textGroup.add(level8);
 	textGroup.add(level9);
 	textGroup.add(level10);
+	textGroup.add(congratulations);
+	textGroup.add(win);
 	layer.add(topGroup);
 	layer.add(bottomGroup);
 	layer.add(textGroup);
@@ -453,74 +497,79 @@
 
 	//Collision detection.
 	document.addEventListener('keydown', (event) => {
-				if (haveIntersection(redspikes, redsquare)&&redspikes.isVisible()==true) {
-                    console.log("redcollision");
-					//reset();
-          socket.emit('reset', true);
-                }
-				if (haveIntersection(bigredspikes, redsquare)&&bigredspikes.isVisible()==true) {
-                    console.log("redcollision");
-					//reset();
-          socket.emit('reset', true);
-                }
-				if (haveIntersection(redspikes, redsquare)&&redspikes.isVisible()==false&&level>=10) {
-                    console.log("redcollision");
-					//reset();
-          socket.emit('reset', true);
-                }
-				if (haveIntersection(moreredspikes, redsquare)&&moreredspikes.isVisible()==false&&level>=10) {
-                    console.log("redcollision");
-					//reset();
-          socket.emit('reset', true);
-                }
-				if (haveIntersection(moreredspikes, redsquare)&&moreredspikes.isVisible()==true) {
-                    console.log("redcollision");
-					//reset();
-          socket.emit('reset', true);
-                }
-				if (haveIntersection(bluspikes, blusquare)&&bluspikes.isVisible()==true) {
-                    console.log("blucollision");
-					//reset();
-          socket.emit('reset', true);
-                }
-				if (haveIntersection(bigbluspikes, blusquare)&&bigbluspikes.isVisible()==true) {
-                    console.log("blucollision");
-					//reset();
-          socket.emit('reset', true);
-                }
-				if (haveIntersection(morebluspikes, blusquare)&&morebluspikes.isVisible()==true) {
-                    console.log("blucollision");
-					//reset();
-          socket.emit('reset', true);
-                }
-				if (haveIntersection(bluspikes, blusquare)&&bluspikes.isVisible()==false&&level>=10) {
-                    console.log("blucollision");
-					//reset();
-          socket.emit('reset', true);
-                }
-				if (haveIntersection(morebluspikes, blusquare)&&morebluspikes.isVisible()==false&&level>=10) {
-                    console.log("blucollision");
-					//reset();
-          socket.emit('reset', true);
-                }
-				if(haveIntersection(redsquare, platform)) {
-					redsquare.y((redsquare.getAbsolutePosition().y-100)-(redsquare.getAbsolutePosition().y-platform.getAbsolutePosition().y+((200-platform.getAbsolutePosition().y)/2)-.5));
+				if((redsquare.getAbsolutePosition().x+20>platform.getAbsolutePosition().x||redsquare.getAbsolutePosition().x-20<platform.getAbsolutePosition().x+platform.width())&&platform.isVisible==true&&level>0) {
+					redsquare.y((platform.getAbsolutePosition().y-10)-100);
+					if(redsquare.y()>84)
+					{redsquare.y(84);}
 					layer.draw();
 				}
-				if(haveIntersection(blusquare, platform)) {
-					blusquare.y((blusquare.getAbsolutePosition().y-300)-(blusquare.getAbsolutePosition().y-platform.getAbsolutePosition().y+((400-platform.getAbsolutePosition().y)/2)-.5));
+				if((blusquare.getAbsolutePosition().x+20>platform.getAbsolutePosition().x||blusquare.getAbsolutePosition().x-20<platform.getAbsolutePosition().x+platform.width())&&platform.isVisible==true&&level>0) {
+					blusquare.y((platform.getAbsolutePosition().y-10)-300);
+					if(blusquare.y()<-25)
+					{blusquare.y(84);}
 					layer.draw();
 				}
-				if(platform.getAbsolutePosition().x > redsquare.getAbsolutePosition().x + redsquare.width() || platform.getAbsolutePosition().x + platform.width() < redsquare.getAbsolutePosition().x)
+				if(platform.getAbsolutePosition().x > redsquare.getAbsolutePosition().x + redsquare.width() || platform.getAbsolutePosition().x + platform.width() < redsquare.getAbsolutePosition().x&&platform.isVisible==true&&level>0)
 				{
-					redsquare.y(75);
+					redsquare.y(84);
 					layer.draw();
 				}
-				if(platform.getAbsolutePosition().x > blusquare.getAbsolutePosition().x + blusquare.width() || platform.getAbsolutePosition().x + platform.width() < blusquare.getAbsolutePosition().x)
+				if(platform.getAbsolutePosition().x > blusquare.getAbsolutePosition().x + blusquare.width() || platform.getAbsolutePosition().x + platform.width() < blusquare.getAbsolutePosition().x&&platform.isVisible==true&&level>0)
 				{
-					blusquare.y(75);
+					blusquare.y(84);
 					layer.draw();
 				}
+				if (spikeIntersection(redspikes, redsquare)&&redspikes.isVisible()==true&&level>0) {
+                    console.log("redcollision");
+					//reset();
+          socket.emit('reset', true);
+                }
+				if (bigspikeIntersection(bigredspikes, redsquare)&&bigredspikes.isVisible()==true&&level>0) {
+                    console.log("redcollision");
+					console.log(bigredspikes.getAbsolutePosition().x+" "+bigredspikes.getAbsolutePosition().y+" "+redsquare.getAbsolutePosition().x+" "+redsquare.getAbsolutePosition().y+" "+bigredspikes.height()+" "+bigredspikes.width()+" "+redsquare.height()+" "+redsquare.width());
+					//reset();
+          socket.emit('reset', true);
+                }
+				if (spikeIntersection(redspikes, redsquare)&&redspikes.isVisible()==false&&level>=10&&level>0) {
+                    console.log("redcollision");
+					//reset();
+          socket.emit('reset', true);
+                }
+				if (spikeIntersection(moreredspikes, redsquare)&&moreredspikes.isVisible()==false&&level>=10&&level>0) {
+                    console.log("redcollision");
+					//reset();
+          socket.emit('reset', true);
+                }
+				if (spikeIntersection(moreredspikes, redsquare)&&moreredspikes.isVisible()==true&&level>0) {
+                    console.log("redcollision");
+					//reset();
+          socket.emit('reset', true);
+                }
+				if (spikeIntersection(bluspikes, blusquare)&&bluspikes.isVisible()==true&&level>0) {
+                    console.log("blucollision");
+					//reset();
+          socket.emit('reset', true);
+                }
+				if (bigspikeIntersection(bigbluspikes, blusquare)&&bigbluspikes.isVisible()==true&&level>0) {
+                    console.log("blucollision");
+					//reset();
+          socket.emit('reset', true);
+                }
+				if (spikeIntersection(morebluspikes, blusquare)&&morebluspikes.isVisible()==true&&level>0) {
+                    console.log("blucollision");
+					//reset();
+          socket.emit('reset', true);
+                }
+				if (spikeIntersection(bluspikes, blusquare)&&bluspikes.isVisible()==false&&level>=10&&level>0) {
+                    console.log("blucollision");
+					//reset();
+          socket.emit('reset', true);
+                }
+				if (spikeIntersection(morebluspikes, blusquare)&&morebluspikes.isVisible()==false&&level>=10&&level>0) {
+                    console.log("blucollision");
+					//reset();
+          socket.emit('reset', true);
+                }
 				/*if(redsquare.getAbsolutePosition().x==850&&blusquare.getAbsolutePosition().x==850)
 				{
 					//reset();
@@ -532,22 +581,31 @@
           //socket.emit('level', level);
 				}*/
         });
-
-		function haveIntersection(r1, r2) {
+		
+		function spikeIntersection(r1, r2) {
             return !(
-                r2.getAbsolutePosition().x > r1.getAbsolutePosition().x + r1.width()+5 ||
-                r2.getAbsolutePosition().x + r2.width() < r1.getAbsolutePosition().x-5 ||
-                r2.getAbsolutePosition().y > r1.getAbsolutePosition().y + r1.height()-5 ||
-                r2.getAbsolutePosition().y + r2.height() < r1.getAbsolutePosition().y+5
+                r2.getAbsolutePosition().x > r1.getAbsolutePosition().x + (r1.width()/2) ||
+                r2.getAbsolutePosition().x + (r2.width()/2) < r1.getAbsolutePosition().x ||
+                r2.getAbsolutePosition().y > r1.getAbsolutePosition().y + (r1.height()/2) ||
+                r2.getAbsolutePosition().y + (r2.height()/2) < r1.getAbsolutePosition().y
+            );
+        }
+		
+		function bigspikeIntersection(r1, r2) {
+            return !(
+                r2.getAbsolutePosition().x > r1.getAbsolutePosition().x + (r1.width()/3) ||
+                r2.getAbsolutePosition().x + r2.width() < r1.getAbsolutePosition().x - (r1.width()/3) ||
+                r2.getAbsolutePosition().y > r1.getAbsolutePosition().y + (r1.height()/3) ||
+                r2.getAbsolutePosition().y + r2.height() < r1.getAbsolutePosition().y
             );
         }
 
 	//Reset the level on a "death".
 		function reset() {
 		redsquare.x(0);
-		redsquare.y(75);
+		redsquare.y(84);
 		blusquare.x(0);
-		blusquare.y(75);
+		blusquare.y(84);
 		platform.x(50);
 		platform.y(262.5);
 		layer.draw();
@@ -561,11 +619,13 @@
 			player.hide();
 			loading.hide();
 			redsquare.x(0);
-			redsquare.y(75);
+			redsquare.y(84);
 			blusquare.show();
 			level1.show();
 			redFloor.show();
 			bluFloor.show();
+			<!-- redflag.show(); -->
+			<!-- bluflag.show(); -->
 			platform.show();
 			layer.draw();
 		}
@@ -595,8 +655,8 @@
 			blulevel3anim.stop();
 			redspikes.hide();
 			bigredspikes.show();
+			bigredspikes.x(450);
 			bigredspikes.y(80);
-			redlevel4anim.start();
 			bluspikes.x(450);
 			bluspikes.y(85);
 			level3.hide();
@@ -609,7 +669,6 @@
 			redspikes.show();
 			moreredspikes.show();
 			morebluspikes.show();
-			redlevel4anim.stop();
 			redspikes.x(300);
 			redspikes.y(85);
 			moreredspikes.x(600);
@@ -747,6 +806,25 @@
 			level10.show();
 			layer.draw();
 		}
+		if(level>10)
+		{
+			redFloor.hide();
+			redspikes.hide();
+			moreredspikes.hide();
+			bluFloor.hide();
+			bluspikes.hide();
+			morebluspikes.hide();
+			platform.hide();
+			redsquare.x(400);
+			redsquare.y(165);
+			blusquare.x(525);
+			blusquare.y(-35);
+			level1.hide();
+			level10.hide();
+			congratulations.show();
+			win.show();
+			layer.draw();
+		}
 		}
 
     //MORE SOCKET.IO STUFF
@@ -764,7 +842,7 @@
         redsquare.setAbsolutePosition(data.redpos);
         layer.draw();
       }
-      if (data.bluepos.x == 850 && data.redpos.x == 850) {
+      if (data.bluepos.x == 900 && data.redpos.x == 900) {
         //console.log(level);
         //level = level + 1;
         //console.log(level);
@@ -777,7 +855,7 @@
       if (new_level == level + 1) {
         level = level + 1;
         reset();
-        levelup(new_level);
+        levelup(level);
       } //else, level is too high -- do nothing
     });
 
