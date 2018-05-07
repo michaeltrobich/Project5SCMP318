@@ -77,9 +77,9 @@ io.on('connection', function(socket) {
   });
 
   //LEVEL SYNCHRONIZATION
-  socket.on('level', function(level) {
-    io.emit('level', level);
-    console.log("Level " + level);
+  socket.on('level', function(new_level) {
+    io.emit('level', new_level);
+    console.log("Level " + new_level);
   });
 
   socket.on('reset', function(x) {

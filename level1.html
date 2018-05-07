@@ -766,16 +766,19 @@
       }
       if (data.bluepos.x == 850 && data.redpos.x == 850) {
         //console.log(level);
-        level = level + 1;
+        //level = level + 1;
         //console.log(level);
-        socket.emit('level', level);
+        socket.emit('level', level + 1);
       }
     });
 
     //LEVEL SYNCHRONIZATION
-    socket.on('level', function(level) {
-      reset();
-      levelup(level);
+    socket.on('level', function(new_level) {
+      if (new_level == level + 1) {
+        level = level + 1;
+        reset();
+        levelup(new_level);
+      } //else, level is too high -- do nothing
     });
 
     socket.on('reset', function(x) {
