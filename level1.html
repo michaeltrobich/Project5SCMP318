@@ -260,33 +260,29 @@
 	  visible : false
     });
 	
-	<!-- var redflag = new Image(); -->
-	<!-- redflag.onload = function() { -->
-	<!-- var rflag = new Konva.Image({ -->
-        <!-- x: 900, -->
-        <!-- y: 150, -->
-        <!-- image: redflag, -->
-        <!-- width: 50, -->
-        <!-- height: 50, -->
-		<!-- visible: false -->
-      <!-- }); -->
-	  <!-- topGroup.add(rflag); -->
-	  <!-- } -->
-	  <!-- redflag.src = 'https://cslab.kenyon.edu/class/softdev/trobichm/KonvaTest/finishflag.png'; -->
+	var redflag = new Image();
+	var rflag = new Konva.Image({
+        x: 850,
+        y: 50,
+        image: redflag,
+        width: 50,
+        height: 50,
+      });
+	  topGroup.add(rflag);
+	  rflag.hide();
+	  redflag.src = 'https://cslab.kenyon.edu/class/softdev/trobichm/KonvaTest/finishflag.png';
 	  
-	<!-- var bluflag = new Image(); -->
-	<!-- bluflag.onload = function() { -->
-	<!-- var bflag = new Konva.Image({ -->
-        <!-- x: 900, -->
-        <!-- y: 350, -->
-        <!-- image: bluflag, -->
-        <!-- width: 50, -->
-        <!-- height: 50, -->
-		<!-- visible: false -->
-      <!-- }); -->
-	  <!-- bottomGroup.add(bflag); -->
-	  <!-- } -->
-	  <!-- bluflag.src = 'https://cslab.kenyon.edu/class/softdev/trobichm/KonvaTest/finishflag1.png'; -->
+	var bluflag = new Image();
+	var bflag = new Konva.Image({
+        x: 850,
+        y: 50,
+        image: bluflag,
+        width: 50,
+        height: 50,
+      });
+	  bottomGroup.add(bflag);
+	  bflag.hide();
+	  bluflag.src = 'https://cslab.kenyon.edu/class/softdev/trobichm/KonvaTest/finishflag1.png';
 
 	var platform = new Konva.Rect({
             x: 50,
@@ -509,12 +505,12 @@
 					{blusquare.y(84);}
 					layer.draw();
 				}
-				if(platform.getAbsolutePosition().x > redsquare.getAbsolutePosition().x + redsquare.width() || platform.getAbsolutePosition().x + platform.width() < redsquare.getAbsolutePosition().x&&platform.isVisible()==true&&level>0)
+				if((platform.getAbsolutePosition().x > redsquare.getAbsolutePosition().x + (redsquare.width()/2) || platform.getAbsolutePosition().x + platform.width() < redsquare.getAbsolutePosition().x)&&platform.isVisible()==true&&level>0)
 				{
 					redsquare.y(84);
 					layer.draw();
 				}
-				if(platform.getAbsolutePosition().x > blusquare.getAbsolutePosition().x + blusquare.width() || platform.getAbsolutePosition().x + platform.width() < blusquare.getAbsolutePosition().x&&platform.isVisible()==true&&level>0)
+				if((platform.getAbsolutePosition().x > blusquare.getAbsolutePosition().x + (blusquare.width()/2) || platform.getAbsolutePosition().x + platform.width()) < blusquare.getAbsolutePosition().x&&platform.isVisible()==true&&level>0)
 				{
 					blusquare.y(84);
 					layer.draw();
@@ -616,16 +612,33 @@
 		console.log("Begin Level "+level);
 		if(level==1)
 		{
-			player.hide();
-			loading.hide();
 			redsquare.x(0);
 			redsquare.y(84);
 			blusquare.show();
+			player.hide();
+			loading.hide();
+			level2.hide();
+			level3.hide();
+			level4.hide();
+			level5.hide();
+			level6.hide();
+			level7.hide();
+			level8.hide();
+			level9.hide();
+			level10.hide();
+			congratulations.hide();
+			win.hide();
+			redspikes.hide();
+			bigredspikes.hide();
+			moreredspikes.hide();
+			bluspikes.hide();
+			bigbluspikes.hide();
+			morebluspikes.hide();
 			level1.show();
+			rflag.show();
+			bflag.show();
 			redFloor.show();
 			bluFloor.show();
-			<!-- redflag.show(); -->
-			<!-- bluflag.show(); -->
 			platform.show();
 			layer.draw();
 		}
