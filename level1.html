@@ -497,24 +497,24 @@
 
 	//Collision detection.
 	document.addEventListener('keydown', (event) => {
-				if((redsquare.getAbsolutePosition().x+20>platform.getAbsolutePosition().x||redsquare.getAbsolutePosition().x-20<platform.getAbsolutePosition().x+platform.width())&&platform.isVisible==true&&level>0) {
+				if((redsquare.getAbsolutePosition().x+20>platform.getAbsolutePosition().x||redsquare.getAbsolutePosition().x-20<platform.getAbsolutePosition().x+platform.width())&&platform.isVisible()==true&&level>0) {
 					redsquare.y((platform.getAbsolutePosition().y-10)-100);
 					if(redsquare.y()>84)
 					{redsquare.y(84);}
 					layer.draw();
 				}
-				if((blusquare.getAbsolutePosition().x+20>platform.getAbsolutePosition().x||blusquare.getAbsolutePosition().x-20<platform.getAbsolutePosition().x+platform.width())&&platform.isVisible==true&&level>0) {
+				if((blusquare.getAbsolutePosition().x+20>platform.getAbsolutePosition().x||blusquare.getAbsolutePosition().x-20<platform.getAbsolutePosition().x+platform.width())&&platform.isVisible()==true&&level>0) {
 					blusquare.y((platform.getAbsolutePosition().y-10)-300);
 					if(blusquare.y()<-25)
 					{blusquare.y(84);}
 					layer.draw();
 				}
-				if(platform.getAbsolutePosition().x > redsquare.getAbsolutePosition().x + redsquare.width() || platform.getAbsolutePosition().x + platform.width() < redsquare.getAbsolutePosition().x&&platform.isVisible==true&&level>0)
+				if(platform.getAbsolutePosition().x > redsquare.getAbsolutePosition().x + redsquare.width() || platform.getAbsolutePosition().x + platform.width() < redsquare.getAbsolutePosition().x&&platform.isVisible()==true&&level>0)
 				{
 					redsquare.y(84);
 					layer.draw();
 				}
-				if(platform.getAbsolutePosition().x > blusquare.getAbsolutePosition().x + blusquare.width() || platform.getAbsolutePosition().x + platform.width() < blusquare.getAbsolutePosition().x&&platform.isVisible==true&&level>0)
+				if(platform.getAbsolutePosition().x > blusquare.getAbsolutePosition().x + blusquare.width() || platform.getAbsolutePosition().x + platform.width() < blusquare.getAbsolutePosition().x&&platform.isVisible()==true&&level>0)
 				{
 					blusquare.y(84);
 					layer.draw();
