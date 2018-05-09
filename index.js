@@ -1,13 +1,4 @@
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-
-app.get('/', function(req, res) {
-  //res.sendFile(__dirname + '/index.html');
-  res.sendFile(__dirname + '/level1.html');
-});
-
-/*var http = require('http');
+var http = require('http');
 var fs = require('fs');
 
 // Loading the index file . html displayed to the client
@@ -43,15 +34,10 @@ var server = http.createServer(function(req, res) {
 console.log("Loaded index file");
 
 // Loading socket.io
-var io = require('socket.io').listen(server);*/
+var io = require('socket.io').listen(server);
 
 io.on('connection', function(socket) {
   //user 1 is red, user 2 is blue
-  /*if (io.sockets.server.eio.clientsCount > 2) {
-    //block all connections... somehow
-    //STILL NEED TO WORK ON THIS
-    socket.disconnect(0);
-  }*/
   if (io.sockets.server.eio.clientsCount == 1) {
     socket.id = 'red';
     var id = socket.id;
@@ -98,8 +84,4 @@ io.on('connection', function(socket) {
 
 });
 
-http.listen(3000, function() {
-  console.log('listening on *:3000');
-});
-
-//server.listen(8090);
+server.listen(8090);

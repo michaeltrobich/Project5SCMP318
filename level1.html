@@ -71,7 +71,7 @@
 
 	var textGroup = new Konva.Group({
 		x:0,
-		y:0,
+		y:50,
 	});
 
 	 var topGroup = new Konva.Group({
@@ -80,7 +80,7 @@
     });
     var bottomGroup = new Konva.Group({
         x: 50,
-        y: 300,
+        y: 400,
     });
 
 	//Then, the level texts.
@@ -157,7 +157,7 @@
 
 	var level7 = new Konva.Text({
 		x: 330,
-		y: 20,
+		y: -30,
 		fontSize: 30,
 		align: 'center',
 		text: 'We have mountains to climb.',
@@ -190,7 +190,7 @@
 		text: 'Friends help you. That\'s what friends do.',
 		visible: false
 	});
-	
+
 	var congratulations = new Konva.Text({
 		x: 400,
 		y: 200,
@@ -199,7 +199,7 @@
 		text: 'Congratulations!',
 		visible: false
 	});
-	
+
 	var win = new Konva.Text({
 		x: 450,
 		y: 300,
@@ -211,8 +211,8 @@
 
 	//The players.
 	var redsquare = new Konva.Circle({
-        x: 150,
-        y: 100,
+        x: 250,
+        y: 75,
         width: 20,
         height: 20,
         fill: 'red',
@@ -259,7 +259,7 @@
       lineJoin: 'round',
 	  visible : false
     });
-	
+
 	var redflag = new Image();
 	var rflag = new Konva.Image({
         x: 850,
@@ -271,7 +271,7 @@
 	  topGroup.add(rflag);
 	  rflag.hide();
 	  redflag.src = 'https://cslab.kenyon.edu/class/softdev/trobichm/KonvaTest/finishflag.png';
-	  
+
 	var bluflag = new Image();
 	var bflag = new Konva.Image({
         x: 850,
@@ -286,7 +286,7 @@
 
 	var platform = new Konva.Rect({
             x: 50,
-            y: 262.5,
+            y: 362.5,
             width: 50,
 			height: 50,
             fill: 'black',
@@ -500,8 +500,8 @@
 					layer.draw();
 				}
 				if((blusquare.getAbsolutePosition().x+20>platform.getAbsolutePosition().x||blusquare.getAbsolutePosition().x-20<platform.getAbsolutePosition().x+platform.width())&&platform.isVisible()==true&&level>0) {
-					blusquare.y((platform.getAbsolutePosition().y-10)-300);
-					if(blusquare.y()<-25)
+					blusquare.y((platform.getAbsolutePosition().y-10)-400);
+					if(blusquare.y()<-40)
 					{blusquare.y(84);}
 					layer.draw();
 				}
@@ -547,6 +547,7 @@
           socket.emit('reset', true);
                 }
 				if (bigspikeIntersection(bigbluspikes, blusquare)&&bigbluspikes.isVisible()==true&&level>0) {
+          console.log(bigbluspikes.height());
                     console.log("blucollision");
 					//reset();
           socket.emit('reset', true);
@@ -577,7 +578,7 @@
           //socket.emit('level', level);
 				}*/
         });
-		
+
 		function spikeIntersection(r1, r2) {
             return !(
                 r2.getAbsolutePosition().x > r1.getAbsolutePosition().x + (r1.width()/2) ||
@@ -586,7 +587,7 @@
                 r2.getAbsolutePosition().y + (r2.height()/2) < r1.getAbsolutePosition().y
             );
         }
-		
+
 		function bigspikeIntersection(r1, r2) {
             return !(
                 r2.getAbsolutePosition().x > r1.getAbsolutePosition().x + (r1.width()/3) ||
@@ -603,7 +604,7 @@
 		blusquare.x(0);
 		blusquare.y(84);
 		platform.x(50);
-		platform.y(262.5);
+		platform.y(312.5);
 		layer.draw();
 		}
 
@@ -777,13 +778,13 @@
 			bluspikes.show();
 			morebluspikes.show();
 			redspikes.x(300);
-			redspikes.y(285);
+			redspikes.y(385);
 			moreredspikes.x(600);
-			moreredspikes.y(285);
+			moreredspikes.y(385);
 			bluspikes.x(300);
-			bluspikes.y(-115);
+			bluspikes.y(-215);
 			morebluspikes.x(600);
-			morebluspikes.y(-115);
+			morebluspikes.y(-215);
 			blulevel9anim1.start();
 			blulevel9anim2.start();
 			redlevel9anim1.start();
@@ -804,9 +805,9 @@
 			moreredspikes.x(600);
 			moreredspikes.y(85);
 			bigredspikes.hide();
-			bluspikes.x(300);
+			bluspikes.x(200);
 			bluspikes.y(85);
-			morebluspikes.x(600);
+			morebluspikes.x(500);
 			morebluspikes.y(85);
 			bigbluspikes.hide();
 			if(color=='red')
@@ -824,14 +825,16 @@
 			redFloor.hide();
 			redspikes.hide();
 			moreredspikes.hide();
+      rflag.hide();
 			bluFloor.hide();
 			bluspikes.hide();
 			morebluspikes.hide();
+      bflag.hide();
 			platform.hide();
 			redsquare.x(400);
-			redsquare.y(165);
+			redsquare.y(215);
 			blusquare.x(525);
-			blusquare.y(-35);
+			blusquare.y(-85);
 			level1.hide();
 			level10.hide();
 			congratulations.show();
