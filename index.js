@@ -5,7 +5,7 @@ var fs = require('fs');
 var server = http.createServer(function(req, res) {
   var url = req.url;
   // If no path, get the index.html
-  if (url == "/") url = "/level1.html";
+  if (url == "/") url = "/index.html";
   // get the file extension (needed for Content-Type)
   var ext = url.split('.').pop();
   console.log(url + "  :  " + ext);

@@ -1,8 +1,5 @@
-"# Project5SCMP318"
+"#Project5SCMP318"
 
-1. Run "node index.js" at command line.
-2. Go to "localhost:3000"
-
-(Can also run on cslab server after cloning
-repo to personal cslab directory, uncommenting
-some code, then going to "cslab.kenyon.edu:8090")
+1. Log onto cslab and clone this directory.
+2. Within directory, run "node index.js".
+3. Connect to "cslab.kenyon.edu:8090"!
