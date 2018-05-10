@@ -25,6 +25,7 @@
   var socket = io();
   var color;
 
+  //Set the color of the player
   socket.on('setColor', function(id) {
     if (id == "blue") {
       color = 'blue';
@@ -38,6 +39,7 @@
     }
   });
 
+  //If there are too many players, tell them the game is full.
   socket.on('full', function(x) {
     if (x) {
       alert("Sorry, the game is full!");
@@ -46,21 +48,17 @@
   });
 
   //KONVA STUFF
-  //var color ='red';
-	//var level = 8;
   var level = 0;
 
   socket.on('start', function(x) {
     if (x) {
-      //console.log(level);
       level = 1;
-      //console.log(level);
       reset();
       levelup(level);
     }
   });
 
-	//First, the stage and the groups.
+	//First, we set up the stage and the groups.
 	var stage = new Konva.Stage({
       container: 'container',
       width: window.innerWidth,
@@ -241,7 +239,7 @@
       }
         });
 
-	//Their platforms.
+	//Their level surfaces.
 	var redFloor = new Konva.Line({
       points: [0, 100, 900, 100],
       stroke: 'black',
@@ -259,7 +257,8 @@
       lineJoin: 'round',
 	  visible : false
     });
-
+	
+	//Their finish flags.
 	var redflag = new Image();
 	var rflag = new Konva.Image({
         x: 850,
@@ -283,7 +282,8 @@
 	  bottomGroup.add(bflag);
 	  bflag.hide();
 	  bluflag.src = 'https://cslab.kenyon.edu/class/softdev/trobichm/KonvaTest/finishflag1.png';
-
+	
+	//And the platform they share.
 	var platform = new Konva.Rect({
             x: 50,
             y: 362.5,
@@ -295,7 +295,7 @@
 			visible: false
         });
 
-	//And the hazards.
+	//Now we create the hazards.
 	var redspikes = new Konva.RegularPolygon({
             x: 100,
             y: 500,
@@ -423,9 +423,10 @@
 		morebluspikes.setX(100 * Math.sin(frame.time * 2 * Math.PI / 2000) + 550);
 		}, layer);
 
-	//Player movement (and switching for local)
+	//Player movement
 	document.addEventListener('keydown', (event) => {
 	const keyName = event.key;
+	//These conditions ensure that the arrow keys move the correct player within the correct range, when the levels are ready.
 	if(keyName=="ArrowRight"&&color=='red'&&redsquare.getAbsolutePosition().x<900&&level>0)
 	{
 		redsquare.move({x: 25,y: 0});
@@ -457,7 +458,7 @@
   socket.emit('square_pos', data);
 	});
 
-    // add the shape to the layer
+    //We add all of the shapes to the group, then the groups to the layer.
 	topGroup.add(redsquare);
 	topGroup.add(redFloor);
 	topGroup.add(redspikes);
@@ -487,24 +488,28 @@
 	layer.add(textGroup);
 	layer.add(platform);
 
-    // add the layer to the stage
+    // Then we add the layer to the stage.
     stage.add(layer);
 
 
 	//Collision detection.
 	document.addEventListener('keydown', (event) => {
+				//These get the player up on the platform if they intersect.
 				if((redsquare.getAbsolutePosition().x+20>platform.getAbsolutePosition().x||redsquare.getAbsolutePosition().x-20<platform.getAbsolutePosition().x+platform.width())&&platform.isVisible()==true&&level>0) {
 					redsquare.y((platform.getAbsolutePosition().y-10)-100);
+					//This establishes a "floor" under which the red player cannot go.
 					if(redsquare.y()>84)
 					{redsquare.y(84);}
 					layer.draw();
 				}
 				if((blusquare.getAbsolutePosition().x+20>platform.getAbsolutePosition().x||blusquare.getAbsolutePosition().x-20<platform.getAbsolutePosition().x+platform.width())&&platform.isVisible()==true&&level>0) {
 					blusquare.y((platform.getAbsolutePosition().y-10)-400);
+					//This establishes a "ceiling" above which the blue player cannot go.
 					if(blusquare.y()<-40)
 					{blusquare.y(84);}
 					layer.draw();
 				}
+				//This brings the player down off the platform when they don't intersect.
 				if((platform.getAbsolutePosition().x > redsquare.getAbsolutePosition().x + (redsquare.width()/2) || platform.getAbsolutePosition().x + platform.width() < redsquare.getAbsolutePosition().x)&&platform.isVisible()==true&&level>0)
 				{
 					redsquare.y(84);
@@ -515,70 +520,50 @@
 					blusquare.y(84);
 					layer.draw();
 				}
+				//Hazard collision.
 				if (spikeIntersection(redspikes, redsquare)&&redspikes.isVisible()==true&&level>0) {
                     console.log("redcollision");
-					//reset();
-          socket.emit('reset', true);
+					socket.emit('reset', true);
                 }
 				if (bigspikeIntersection(bigredspikes, redsquare)&&bigredspikes.isVisible()==true&&level>0) {
                     console.log("redcollision");
-					console.log(bigredspikes.getAbsolutePosition().x+" "+bigredspikes.getAbsolutePosition().y+" "+redsquare.getAbsolutePosition().x+" "+redsquare.getAbsolutePosition().y+" "+bigredspikes.height()+" "+bigredspikes.width()+" "+redsquare.height()+" "+redsquare.width());
-					//reset();
-          socket.emit('reset', true);
-                }
-				if (spikeIntersection(redspikes, redsquare)&&redspikes.isVisible()==false&&level>=10&&level>0) {
-                    console.log("redcollision");
-					//reset();
-          socket.emit('reset', true);
-                }
-				if (spikeIntersection(moreredspikes, redsquare)&&moreredspikes.isVisible()==false&&level>=10&&level>0) {
-                    console.log("redcollision");
-					//reset();
-          socket.emit('reset', true);
+					socket.emit('reset', true);
                 }
 				if (spikeIntersection(moreredspikes, redsquare)&&moreredspikes.isVisible()==true&&level>0) {
                     console.log("redcollision");
-					//reset();
-          socket.emit('reset', true);
+					socket.emit('reset', true);
+                }
+				if (spikeIntersection(redspikes, redsquare)&&redspikes.isVisible()==false&&level>=10&&level>0) {
+                    console.log("redcollision");
+					socket.emit('reset', true);
+                }
+				if (spikeIntersection(moreredspikes, redsquare)&&moreredspikes.isVisible()==false&&level>=10&&level>0) {
+                    console.log("redcollision");
+					socket.emit('reset', true);
                 }
 				if (spikeIntersection(bluspikes, blusquare)&&bluspikes.isVisible()==true&&level>0) {
                     console.log("blucollision");
-					//reset();
-          socket.emit('reset', true);
+					socket.emit('reset', true);
                 }
 				if (bigspikeIntersection(bigbluspikes, blusquare)&&bigbluspikes.isVisible()==true&&level>0) {
-          console.log(bigbluspikes.height());
                     console.log("blucollision");
-					//reset();
-          socket.emit('reset', true);
+					socket.emit('reset', true);
                 }
 				if (spikeIntersection(morebluspikes, blusquare)&&morebluspikes.isVisible()==true&&level>0) {
                     console.log("blucollision");
-					//reset();
-          socket.emit('reset', true);
+					socket.emit('reset', true);
                 }
 				if (spikeIntersection(bluspikes, blusquare)&&bluspikes.isVisible()==false&&level>=10&&level>0) {
                     console.log("blucollision");
-					//reset();
-          socket.emit('reset', true);
+					socket.emit('reset', true);
                 }
 				if (spikeIntersection(morebluspikes, blusquare)&&morebluspikes.isVisible()==false&&level>=10&&level>0) {
                     console.log("blucollision");
-					//reset();
-          socket.emit('reset', true);
+					socket.emit('reset', true);
                 }
-				/*if(redsquare.getAbsolutePosition().x==850&&blusquare.getAbsolutePosition().x==850)
-				{
-					//reset();
-          console.log(level);
-          level=level+1;
-          console.log(level);
-					//levelup(level);
-          //SOCKET.IO STUFF
-          //socket.emit('level', level);
-				}*/
         });
-
+		
+		//Functions to check intersection with hazards.
 		function spikeIntersection(r1, r2) {
             return !(
                 r2.getAbsolutePosition().x > r1.getAbsolutePosition().x + (r1.width()/2) ||
@@ -616,6 +601,7 @@
 			redsquare.x(0);
 			redsquare.y(84);
 			blusquare.show();
+			//Someone might be resetting from a higher level, so we have to hide everything.
 			player.hide();
 			loading.hide();
 			level2.hide();
@@ -825,11 +811,11 @@
 			redFloor.hide();
 			redspikes.hide();
 			moreredspikes.hide();
-      rflag.hide();
+			rflag.hide();
 			bluFloor.hide();
 			bluspikes.hide();
 			morebluspikes.hide();
-      bflag.hide();
+			bflag.hide();
 			platform.hide();
 			redsquare.x(400);
 			redsquare.y(215);
@@ -847,9 +833,6 @@
 
     //CHARACTER SYNCHRONIZATION
     socket.on('square_pos', function(data) {
-      //console.log(data);
-      console.log(data.bluepos.x, data.redpos.x);
-
       if (color == 'red' && data.color == 'blue') {
         blusquare.setAbsolutePosition(data.bluepos);
         layer.draw();
@@ -859,9 +842,6 @@
         layer.draw();
       }
       if (data.bluepos.x == 900 && data.redpos.x == 900) {
-        //console.log(level);
-        //level = level + 1;
-        //console.log(level);
         socket.emit('level', level + 1);
       }
     });
@@ -890,7 +870,6 @@
 
     socket.on('platform_pos', function(pos) {
       //move platform to new position
-      console.log(pos.x, pos.y);
       platform.setAbsolutePosition(pos);
       layer.draw();
     });
